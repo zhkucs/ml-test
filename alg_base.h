@@ -14,6 +14,15 @@ using namespace vcg;
 #define PI 3.141592653589
 #define rad2angle( r) r*180/PI;
 namespace gdut_base{
+	//函数对象 用于对pair进行hash
+struct pairhash{
+template<class T1, class T2>
+size_t operator()(const pair<T1, T2> &x) const{ //为什么去掉最后的const编译无法通过？？？？？？？
+hash<T1> h1;
+hash<T2> h2;
+return h1(x.first) ^ h2(x.second); 
+}
+};
 	struct Color{
 		Color(float r,float g,float b){
 			_r =r;
@@ -25,8 +34,6 @@ namespace gdut_base{
 	}Red(1,0,0),Green(0,1,0),Blue(0,0,1);
 
 	void countNablaOfFace(CFaceO&f,double s0,double s1,double s2,vcg::Point3f&result){
-
-
 				vcg::Point3f p_i = f.P0(0); 
 				vcg::Point3f p_j = f.P0(1); 
 				vcg::Point3f p_k = f.P0(2); 

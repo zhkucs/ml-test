@@ -524,7 +524,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 
 			// ÇóÎÞÉ¢³¡Cf
 			std::map<int,Point3f> cf;
-			gdut_curl::countDivfree(m,kexi,cf);
+			//gdut_curl::countDivfree(m,kexi,cf);
 
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi; 
