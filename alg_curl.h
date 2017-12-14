@@ -8,7 +8,6 @@
 #include <vector>
 #include <math.h>
 #include "alg_base.h"
-#include "SparseMatrix.h"
 using namespace std;
 using namespace Eigen;
 //typedef Eigen::Triplet<double> T;
@@ -20,6 +19,7 @@ namespace gdut_curl{
 		for(int i = 0; i < m.cm.FN(); i++) {
 			CFaceO &face = m.cm.face[i];	   
 			int col = face.Index();
+			float area = gdut_base::countArea(face);
 			vcg::Point3f& kexi = map[face.Index()];
 			for(int j = 0;j < 3; j++) {
 				// get vertex positions
@@ -32,7 +32,7 @@ namespace gdut_curl{
 
 				vcg::Point3f nabla_phi; 
 				gdut_base::countPhi(v0->P(),v1->P(),v2->P(),nabla_phi);
-				vcg::Point3f rhs = nabla_phi ^ kexi;
+				vcg::Point3f rhs = (nabla_phi ^ kexi)*area;
 				// spin::Quaternion q(0,nabla_phi0.X()/2,nabla_phi0.Y()/2,nabla_phi0.Z()/2);
 				// add contribution of this cotangent to the matrix
 				b[row] += rhs.X();
@@ -51,7 +51,8 @@ namespace gdut_curl{
 		// visit each face
 		for(int i = 0; i < m.cm.FN(); i++) {
 			CFaceO &face = m.cm.face[i];	   
-			int col = 3*face.Index();			
+			int col = 3*face.Index();
+			
 			// get vertex positions
 			CVertexO* v0 = face.V(0);
 			CVertexO* v1 = face.V(1);
@@ -74,12 +75,13 @@ namespace gdut_curl{
 			vcg::Point3f n12 = nabla_phi1^nabla_phi2;
 			vcg::Point3f n20 = nabla_phi2^nabla_phi0;				
 
-			LL[std::make_pair(i0,i1)]+=n01;
-			LL[std::make_pair(i1,i0)]-=n01;
-			LL[std::make_pair(i1,i2)]+=n12;
-			LL[std::make_pair(i2,i1)]-=n12;
-			LL[std::make_pair(i2,i0)]+=n12;
-			LL[std::make_pair(i0,i2)]-=n20;
+			float area = gdut_base::countArea(face);
+			LL[std::make_pair(i0,i1)]+=n01*area;
+			LL[std::make_pair(i1,i0)]-=n01*area;
+			LL[std::make_pair(i1,i2)]+=n12*area;
+			LL[std::make_pair(i2,i1)]-=n12*area;
+			LL[std::make_pair(i2,i0)]+=n20*area;
+			LL[std::make_pair(i0,i2)]-=n20*area;
 		/*	LL.coeffRef(i0,i1)+=n01;
 			LL.coeffRef(i1,i0)-=n01;
 
@@ -89,8 +91,21 @@ namespace gdut_curl{
 			L.coeffRef(i0,i1)+=n01;
 			L.coeffRef(i1,i0)-=n01;*/
 		}
+		L.setZero();
+		for(unordered_map<std::pair<int, int>, vcg::Point3f>::iterator iter=LL.begin();iter!=LL.end();iter++){
+			pair<int,int> indice = iter->first;
+			vcg::Point3f p = iter->second;
+			int row = indice.first*3;
+			int col = indice.second*3;
+			L.coeffRef(row,col+1) = -p.Z();
+			L.coeffRef(row,col+2) = p.Y();
+			L.coeffRef(row+1,col) = p.Z();
+			L.coeffRef(row+1,col+2) = -p.Y();
+			L.coeffRef(row+2,col) = -p.Y();
+			L.coeffRef(row+2,col+1) = p.X();
+		}
 	
-//	L.makeCompressed();//压缩剩余的空间
+	//  L.makeCompressed();//压缩剩余的空间
 }
 
 
@@ -107,21 +122,39 @@ void countDivfree(MeshModel &m,std::map<int,vcg::Point3f>& kexi,std::map<int,vcg
 	double maxb = b.maxCoeff();
 	double minb = b.minCoeff();
 
-	SparseMatrix<double> L(3*nV,3*nF);// 系数矩阵|V|*|F|，为（4）中左侧的部分
+	SparseMatrix<double> L(3*nV,3*nV);// 系数矩阵|3V|*|3V|，为（4）中左侧的部分
 	L.reserve(36*nV);
 	buildLHS(m,L);
 	int nZ = L.nonZeros();
 
 	Eigen::SimplicialCholesky<SparseMatrix<double>> chol(L);  // 执行A的 Cholesky分解
 	//Eigen::ConjugateGradient<SparseMatrix<double>,Eigen::Upper> chol(A);  // 执行A的 Cholesky分解
-	VectorXd x(3*m.cm.FN());
+	VectorXd x(3*m.cm.VN());
 	x = chol.solve(b);         // 使用A的Cholesky分解来求解等号右边的向量b
+
+	double meanX = x.mean();
+	double maxbX = x.maxCoeff();
+	double minbX = x.minCoeff();
 
 	if(chol.info()!=Success) {
 		// decomposition failed
 		for(int i = 0; i < m.cm.FN();i++){
+			CFaceO face = m.cm.face[i];
+			CVertexO* v0 = face.V(0);
+			CVertexO* v1 = face.V(1);
+			CVertexO* v2 = face.V(2);
+
+			int i0 = v0->Index()*3;
+			int i1 = v1->Index()*3;
+			int i2 = v2->Index()*3;
+
 			int begin = 3*i;
-			result.insert(pair<int,vcg::Point3f>(i,vcg::Point3f(x[begin],x[begin+1],x[begin+2])));
+			vcg::Point3f p0(x[i0],x[i0+1],x[i0+2]);
+			vcg::Point3f p1(x[i1],x[i1+1],x[i1+2]);
+			vcg::Point3f p2(x[i2],x[i2+1],x[i2+2]);
+			p0+=p1;
+			p0+=p2;
+			result.insert(pair<int,vcg::Point3f>(i,p0));
 		}
 		return;
 	}	

@@ -85,6 +85,15 @@ return h1(x.first) ^ h2(x.second);
 		result= (p_i-p_j)^normalf/double_area;
 	}
 
+	float countArea(CFaceO& f){
+		vcg::Point3f p_i = f.P(0);
+		vcg::Point3f p_j = f.P(1);
+		vcg::Point3f p_k = f.P(2);
+		vcg::Point3f vij=p_j-p_i;  
+		vcg::Point3f vik=-p_k-p_i;
+		return (vij ^ vik).Norm()/2;
+	}
+
 
 	void drawArrow(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
 {//////////////////////////////////////////

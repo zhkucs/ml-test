@@ -522,14 +522,14 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			std::map<int,Point3f> kexi;
 		    gdut_base::buildKexi(m,kexi);
 
-			// 求无散场Cf
-			std::map<int,Point3f> cf;
-			//gdut_curl::countDivfree(m,kexi,cf);
+			// 求无旋场df
+			std::map<int,Point3f> df;
+			gdut_curl::countDivfree(m,kexi,df);
 
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi; 
 				vcg::Point3f bc = Barycenter(f);
-				vcg::Point3f end =  bc  + cf[f.Index()];
+				vcg::Point3f end =  bc  + df[f.Index()];
 
 				vcg::Point3f normalf=Normal(f); 
 				double r = Distance(f.V(0)->P(),bc);
