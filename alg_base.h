@@ -23,6 +23,11 @@ hash<T2> h2;
 return h1(x.first) ^ h2(x.second); 
 }
 };
+
+//void checkValue(std::unordered_map<std::pair<int, int>, vcg::Point3f, gdut_base::pairhash>&  LL,std::pair<int, int> pair){
+//	LL[pair].
+//}
+
 	struct Color{
 		Color(float r,float g,float b){
 			_r =r;

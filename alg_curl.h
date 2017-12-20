@@ -47,16 +47,36 @@ namespace gdut_curl{
 		int nV = m.cm.VN();
 		std::unordered_map<std::pair<int, int>, vcg::Point3f, gdut_base::pairhash>  LL;
 		//L.reserve(VectorXi::Constant(nV,6));
-		L.setZero();
-		// visit each face
 		for(int i = 0; i < m.cm.FN(); i++) {
-			CFaceO &face = m.cm.face[i];	   
-			int col = 3*face.Index();
-			
+			CFaceO &face = m.cm.face[i];
 			// get vertex positions
 			CVertexO* v0 = face.V(0);
 			CVertexO* v1 = face.V(1);
-			CVertexO* v2 = face.V(2);
+			CVertexO* v2 = face.V(2);		
+
+			int i0 = v0->Index();
+			int i1 = v1->Index();
+			int i2 = v2->Index();
+
+			LL[std::make_pair(i0,i1)]=vcg::Point3f();
+			LL[std::make_pair(i0,i2)]=vcg::Point3f();
+
+			LL[std::make_pair(i1,i2)]=vcg::Point3f();
+			LL[std::make_pair(i1,i0)]=vcg::Point3f();
+
+			LL[std::make_pair(i2,i0)]=vcg::Point3f();
+			LL[std::make_pair(i2,i1)]=vcg::Point3f();
+		}
+		L.setZero();
+		// visit each face
+		for(int i = 0; i < m.cm.FN(); i++) {
+			CFaceO &face = m.cm.face[i];	 
+			float area = gdut_base::countArea(face);
+
+			// get vertex positions
+			CVertexO* v0 = face.V(0);
+			CVertexO* v1 = face.V(1);
+			CVertexO* v2 = face.V(2);		
 
 			int i0 = v0->Index();
 			int i1 = v1->Index();
@@ -72,24 +92,18 @@ namespace gdut_curl{
 			gdut_base::countPhi(v2->P(),v0->P(),v1->P(),nabla_phi2);
 
 			vcg::Point3f n01 = nabla_phi0^nabla_phi1;
+			vcg::Point3f n02 = nabla_phi0^nabla_phi2;
 			vcg::Point3f n12 = nabla_phi1^nabla_phi2;
-			vcg::Point3f n20 = nabla_phi2^nabla_phi0;				
 
-			float area = gdut_base::countArea(face);
 			LL[std::make_pair(i0,i1)]+=n01*area;
-			LL[std::make_pair(i1,i0)]-=n01*area;
+			LL[std::make_pair(i0,i2)]+=n02*area;
+
 			LL[std::make_pair(i1,i2)]+=n12*area;
+			LL[std::make_pair(i1,i0)]-=n01*area;
+
+			LL[std::make_pair(i2,i0)]-=n02*area;
 			LL[std::make_pair(i2,i1)]-=n12*area;
-			LL[std::make_pair(i2,i0)]+=n20*area;
-			LL[std::make_pair(i0,i2)]-=n20*area;
-		/*	LL.coeffRef(i0,i1)+=n01;
-			LL.coeffRef(i1,i0)-=n01;
 
-			LL.coeffRef(i0,i1)+=n01;
-			L.coeffRef(i1,i0)-=n01;
-
-			L.coeffRef(i0,i1)+=n01;
-			L.coeffRef(i1,i0)-=n01;*/
 		}
 		L.setZero();
 		for(unordered_map<std::pair<int, int>, vcg::Point3f>::iterator iter=LL.begin();iter!=LL.end();iter++){
@@ -104,61 +118,60 @@ namespace gdut_curl{
 			L.coeffRef(row+2,col) = -p.Y();
 			L.coeffRef(row+2,col+1) = p.X();
 		}
-	
-	//  L.makeCompressed();//压缩剩余的空间
-}
+
+		//  L.makeCompressed();//压缩剩余的空间
+	}
 
 
 
-void countDivfree(MeshModel &m,std::map<int,vcg::Point3f>& kexi,std::map<int,vcg::Point3f>& result){
-	//    vector<float> x;// 解向量共|F|个分量
-	int nV = m.cm.VN();
-	int nF = m.cm.FN();
-	VectorXd b(3*nV);
-	b.setZero();
-	buildRHS(m,kexi,b);
+	void countDivfree(MeshModel &m,std::map<int,vcg::Point3f>& kexi,std::map<int,vcg::Point3f>& result){
+		//    vector<float> x;// 解向量共|F|个分量
+		int nV = m.cm.VN();
+		VectorXd b(3*nV);
+		b.setZero();
+		buildRHS(m,kexi,b);
 
-	double mean = b.mean();
-	double maxb = b.maxCoeff();
-	double minb = b.minCoeff();
+		double mean = b.mean();
+		double maxb = b.maxCoeff();
+		double minb = b.minCoeff();
 
-	SparseMatrix<double> L(3*nV,3*nV);// 系数矩阵|3V|*|3V|，为（4）中左侧的部分
-	L.reserve(36*nV);
-	buildLHS(m,L);
-	int nZ = L.nonZeros();
+		SparseMatrix<double> L(3*nV,3*nV);// 系数矩阵|3V|*|3V|，为（4）中左侧的部分
+		L.reserve(36*nV);
+		buildLHS(m,L);
+		int nZ = L.nonZeros();
 
-	Eigen::SimplicialCholesky<SparseMatrix<double>> chol(L);  // 执行A的 Cholesky分解
-	//Eigen::ConjugateGradient<SparseMatrix<double>,Eigen::Upper> chol(A);  // 执行A的 Cholesky分解
-	VectorXd x(3*m.cm.VN());
-	x = chol.solve(b);         // 使用A的Cholesky分解来求解等号右边的向量b
+		//Eigen::SimplicialCholesky<SparseMatrix<double>> chol(L);  // 执行A的 Cholesky分解
+		Eigen::ConjugateGradient<SparseMatrix<double>,Eigen::Upper> chol(L);  // 执行A的 Cholesky分解
+		VectorXd x(3*nV);
+		x = chol.solve(b);         // 使用A的Cholesky分解来求解等号右边的向量b
 
-	double meanX = x.mean();
-	double maxbX = x.maxCoeff();
-	double minbX = x.minCoeff();
+		double meanX = x.mean();
+		double maxbX = x.maxCoeff();
+		double minbX = x.minCoeff();
 
-	if(chol.info()!=Success) {
-		// decomposition failed
-		for(int i = 0; i < m.cm.FN();i++){
-			CFaceO face = m.cm.face[i];
-			CVertexO* v0 = face.V(0);
-			CVertexO* v1 = face.V(1);
-			CVertexO* v2 = face.V(2);
+		if(chol.info()!=Success) {
+			// decomposition failed
+			for(int i = 0; i < m.cm.FN();i++){
+				CFaceO face = m.cm.face[i];
+				CVertexO* v0 = face.V(0);
+				CVertexO* v1 = face.V(1);
+				CVertexO* v2 = face.V(2);
 
-			int i0 = v0->Index()*3;
-			int i1 = v1->Index()*3;
-			int i2 = v2->Index()*3;
+				int i0 = v0->Index()*3;
+				int i1 = v1->Index()*3;
+				int i2 = v2->Index()*3;
 
-			int begin = 3*i;
-			vcg::Point3f p0(x[i0],x[i0+1],x[i0+2]);
-			vcg::Point3f p1(x[i1],x[i1+1],x[i1+2]);
-			vcg::Point3f p2(x[i2],x[i2+1],x[i2+2]);
-			p0+=p1;
-			p0+=p2;
-			result.insert(pair<int,vcg::Point3f>(i,p0));
-		}
-		return;
-	}	
-}
+				int begin = 3*i;
+				vcg::Point3f p0(x[i0],x[i0+1],x[i0+2]);
+				vcg::Point3f p1(x[i1],x[i1+1],x[i1+2]);
+				vcg::Point3f p2(x[i2],x[i2+1],x[i2+2]);
+				p0+=p1;
+				p0+=p2;
+				result.insert(pair<int,vcg::Point3f>(i,p0));
+			}
+			return;
+		}	
+	}
 }
 
 #endif
