@@ -23,11 +23,6 @@ hash<T2> h2;
 return h1(x.first) ^ h2(x.second); 
 }
 };
-
-//void checkValue(std::unordered_map<std::pair<int, int>, vcg::Point3f, gdut_base::pairhash>&  LL,std::pair<int, int> pair){
-//	LL[pair].
-//}
-
 	struct Color{
 		Color(float r,float g,float b){
 			_r =r;
@@ -87,7 +82,7 @@ return h1(x.first) ^ h2(x.second);
 		vcg::Point3f vik=-p_k-p_i;
 		float double_area = (vij ^ vik).Norm()/2;
 		vcg::Point3f normalf=(vij ^ vik).Normalize(); 
-		result= (p_i-p_j)^normalf/double_area;
+		result= (p_j-p_k)^normalf/double_area;
 	}
 
 	float countArea(CFaceO& f){

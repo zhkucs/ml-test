@@ -38,7 +38,11 @@
 //#include "algorithm.h"
 #include "alg_base.h"
 #include "alg_div.h"
-#include "alg_curl.h"
+//#include "alg_curl.h"
+#include "alg_div_free.h"
+
+#include <assert.h>
+
 #include <map>
 
 using namespace vcg;
@@ -524,19 +528,24 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 
 			// 求无旋场df
 			std::map<int,Point3f> df;
-			gdut_curl::countDivfree(m,kexi,df);
+			//gdut_curl::countDivfree(m,kexi,df);
+			gdut_div_free::countDivfree(m,kexi,df);
 
+			int n = 0;
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi; 
-				vcg::Point3f bc = Barycenter(f);
+				vcg::Point3f bc = Circumcenter(f);// 外心
 				vcg::Point3f end =  bc  + df[f.Index()];
+				assert(df[f.Index()].Norm()<100000000);
 
 				vcg::Point3f normalf=Normal(f); 
 				double r = Distance(f.V(0)->P(),bc);
 				vcg::Point3f newEnd = standardize(bc,end,r);
-				gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Red);
+				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Red);
+				gdut_base::drawArrow(bc ,end,normalf,gdut_base::Red);
+				n++;
 			}
-
+			//assert(n==200);
 		}
 		break;
 	case DP_MEAN_CURVATURE:

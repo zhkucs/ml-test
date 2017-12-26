@@ -98,5 +98,8 @@
     <ClInclude Include="alg_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="alg_div_free.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
