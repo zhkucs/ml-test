@@ -499,10 +499,11 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f start = Barycenter(f) ;
 				vcg::Point3f end =  start  + nablaD;
 
-				vcg::Point3f normalf=Normal(f); 
+				vcg::Point3f normalf=NormalizedNormal(f); 
 				double r = Distance(v0->P(),start);
 				vcg::Point3f newEnd = standardize(start,end,r);
-				gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
+				if(r < (start - newEnd).Norm()/3)
+					gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
 			}
 
 		}
@@ -538,7 +539,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f end =  bc  + df[f.Index()];
 				assert(df[f.Index()].Norm()<100000000);
 
-				vcg::Point3f normalf=Normal(f); 
+				vcg::Point3f normalf=NormalizedNormal(f); 
 				double r = Distance(f.V(0)->P(),bc);
 				vcg::Point3f newEnd = standardize(bc,end,r);
 				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Red);
@@ -577,30 +578,18 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				float kh_i = f.V0(0)->Kh();
 				float kh_j = f.V0(1)->Kh();
 				float kh_k = f.V0(2)->Kh();
-				vcg::Point3f p_i = f.P0(0); 
-				vcg::Point3f p_j = f.P0(1); 
-				vcg::Point3f p_k = f.P0(2); 
 
-				vcg::Point3f vij=f.P0(1)-f.P0(0);  
-				vcg::Point3f vik=f.P0(2)-f.P0(0);
-				float area = (vij ^ vik).Norm()/2;
+				vcg::Point3f nabla_f;
+				gdut_base::countNablaOfFace(f,kh_i,kh_j,kh_k,nabla_f);
 
-				vcg::Point3f normalf=(vij ^ vik).Normalize(); 
-
-				vcg::Point3f phi_j = (p_i-p_j)^normalf/(2*area);
-				vcg::Point3f phi_k = (p_j-p_i)^normalf/(2*area);
-
-				vcg::Point3f nabla_f=phi_j*(kh_j-kh_i)+phi_k*(kh_k-kh_i);	
-
-				float areaf=0.5f*normalf.Norm();  
-				vcg::Point3f nr = normalf.Normalize();
 				vcg::Point3f bc = Barycenter(f);
-				double r = Distance(p_i,bc);				
+				double r = Distance(f.P0(0),bc);				
 
 				vcg::Point3f start = Barycenter(f);
-				vcg::Point3f end =  start + (nabla_f*4);
+				//vcg::Point3f end =  start + (nabla_f*4);
+				vcg::Point3f end =  start + (nabla_f*2);
 				vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end
-
+				
 				//x轴
 				//	glBegin(GL_LINES);
 				//	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
@@ -616,8 +605,11 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				//	//glutWireCone(0.027,0.09,10,10);
 				//	glPopMatrix();
 				//	glFlush();
-
-				drawArrow(start ,newEnd,normalf,gdut_base::Blue);			
+				if(r > (start - end).Norm()/4){
+				
+				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
+				drawArrow(start ,end,normalf,gdut_base::Blue);	
+				}
 				//start
 			}
 

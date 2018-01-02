@@ -38,14 +38,15 @@ return h1(x.first) ^ h2(x.second);
 				vcg::Point3f p_j = f.P0(1); 
 				vcg::Point3f p_k = f.P0(2); 
 
+				//梯度的计算参考了 http://blog.csdn.net/zdy0_2004/article/details/49615919
 				vcg::Point3f vij=f.P0(1)-f.P0(0);  
 				vcg::Point3f vik=f.P0(2)-f.P0(0);
 				float area = (vij ^ vik).Norm()/2;
 
-				vcg::Point3f normalf=(vij ^ vik).Normalize(); 
+				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f); 
 
-				vcg::Point3f phi_j = (p_i-p_j)^normalf/(2*area);
-				vcg::Point3f phi_k = (p_j-p_i)^normalf/(2*area);
+				vcg::Point3f phi_j = normalf^(p_i-p_k)/(2*area);
+				vcg::Point3f phi_k = normalf^(p_j-p_i)/(2*area);
 
 				result=phi_j*(s1-s0)+phi_k*(s2-s0);	
 	}
