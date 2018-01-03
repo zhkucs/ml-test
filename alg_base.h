@@ -81,9 +81,8 @@ return h1(x.first) ^ h2(x.second);
 	void countPhi(vcg::Point3f& p_i,vcg::Point3f& p_j,vcg::Point3f& p_k,vcg::Point3f&result){
 		vcg::Point3f vij=p_j-p_i;  
 		vcg::Point3f vik=-p_k-p_i;
-		float double_area = (vij ^ vik).Norm()/2;
-		vcg::Point3f normalf=(vij ^ vik).Normalize(); 
-		result= (p_j-p_k)^normalf/double_area;
+		vcg::Point3f normal = (vik^vij);
+		result= (p_j-p_k)^normal.Normalize()/normal.Norm();
 	}
 
 	float countArea(CFaceO& f){

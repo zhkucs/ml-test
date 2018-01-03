@@ -162,7 +162,6 @@ void countDivfree(MeshModel &m,std::map<int,vcg::Point3f>& kexi,std::map<int,vcg
 	double minbX = x.minCoeff();
 
 	if(chol.info()==Success) {
-		// decomposition failed
 		for(int i = 0; i < nF;i++){
 			CFaceO face = m.cm.face[i];
 			CVertexO* v0 = face.V(0);
@@ -177,9 +176,18 @@ void countDivfree(MeshModel &m,std::map<int,vcg::Point3f>& kexi,std::map<int,vcg
 			vcg::Point3f p0(x[i0],x[i0+1],x[i0+2]);
 			vcg::Point3f p1(x[i1],x[i1+1],x[i1+2]);
 			vcg::Point3f p2(x[i2],x[i2+1],x[i2+2]);
-			p0+=p1;
-			p0+=p2;
-			result.insert(pair<int,vcg::Point3f>(i,p0));
+
+			vcg::Point3f nabla_phi0; 
+			gdut_base::countPhi(v0->P(),v1->P(),v2->P(),nabla_phi0);
+
+			vcg::Point3f nabla_phi1; 
+			gdut_base::countPhi(v1->P(),v2->P(),v0->P(),nabla_phi1);
+
+			vcg::Point3f nabla_phi2; 
+			gdut_base::countPhi(v2->P(),v0->P(),v1->P(),nabla_phi2);
+
+			vcg::Point3f v_f = nabla_phi0 ^ p0 + nabla_phi1 ^ p1 + nabla_phi2 ^ p2;// 各顶点与基函数梯度叉积后求和，为三角形面片内
+			result.insert(pair<int,vcg::Point3f>(i,v_f));
 		}
 		return;
 	}	
