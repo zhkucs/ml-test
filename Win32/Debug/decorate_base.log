@@ -1,33 +1,12 @@
-﻿生成启动时间为 1/4/2018 7:37:18 AM。
-     1>项目“D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\decorate_base.vcxproj”在节点 2 上(rebuild 个目标)。
-     1>_PrepareForClean:
-         正在删除文件“Win32\Debug\decorate_base.lastbuildstate”。
+﻿生成启动时间为 1/4/2018 2:25:11 PM。
+     1>项目“D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\decorate_base.vcxproj”在节点 2 上(build 个目标)。
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(298,5): warning MSB8004: Intermediate 目录未以斜杠结尾。此生成实例将添加斜杠，因为必须有这个斜杠才能正确计算 Intermediate 目录。
-       InitializeBuildStatus:
-         正在创建“Win32\Debug\decorate_base.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+     1>InitializeBuildStatus:
+         正在对“Win32\Debug\decorate_base.unsuccessfulbuild”执行 Touch 任务。
        CustomBuild:
-         Moc'ing decorate_base.h...
-         Rcc'ing decorate_base.qrc...
+         所有输出均为最新。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ID:\meshlab133\vcglib\eigenlib /ID:\spinxform_opengl\include /ID:\meshlab133\vcglib\vcg\complex\algorithms\update /I"D:\gdut\software\glut-lib" /IC:\Qt\4.8.5\include\QtCore /IC:\Qt\4.8.5\include\QtGui /IC:\Qt\4.8.5\include\QtOpenGL /IC:\Qt\4.8.5\include\QtXml /IC:\Qt\4.8.5\include\QtXmlPatterns /IC:\Qt\4.8.5\include\QtScript /IC:\Qt\4.8.5\include /I..\.. /I..\..\..\..\vcglib /I"..\..\external\glew-1.7.0\include" /IC:\Qt\4.8.5\include\ActiveQt /Idebug /IC:\Qt\4.8.5\mkspecs\default /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D NOMINMAX /D GLEW_STATIC /D _USE_MATH_DEFINES /D _CRT_SECURE_NO_DEPRECATE /D QT_DLL /D QT_PLUGIN /D QT_SCRIPT_LIB /D QT_XMLPATTERNS_LIB /D QT_XML_LIB /D QT_OPENGL_LIB /D QT_GUI_LIB /D QT_CORE_LIB /D QT_HAVE_MMX /D QT_HAVE_3DNOW /D QT_HAVE_SSE /D QT_HAVE_MMXEXT /D QT_HAVE_SSE2 /D QT_THREAD_SUPPORT /D _WINDLL /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\..\vcglib\wrap\gui\coordinateframe.cpp decorate_base.cpp GeneratedFiles\Debug\moc_decorate_base.cpp GeneratedFiles\qrc_decorate_base.cpp -Zm200 -w34100 -w34189 
-         coordinateframe.cpp
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h(159): warning C4244: “=”: 从“const double”转换到“float”，可能丢失数据
-                 D:\meshlab133\vcglib\vcg/math/matrix44.h(674): 参见对正在编译的函数 模板 实例化“void vcg::Matrix44<T>::FromEigenMatrix<Eigen::Matrix4d>(const EigenMatrix44Type &)”的引用
-                 with
-                 [
-                     T=float,
-                     EigenMatrix44Type=Eigen::Matrix4d
-                 ]
-                 ..\..\..\..\vcglib\wrap\gui\coordinateframe.cpp(216): 参见对正在编译的函数 模板 实例化“vcg::Matrix44<T> vcg::Inverse<float>(const vcg::Matrix44<T> &)”的引用
-                 with
-                 [
-                     T=float
-                 ]
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ID:\meshlab133\vcglib\eigenlib /ID:\spinxform_opengl\include /ID:\meshlab133\vcglib\vcg\complex\algorithms\update /I"D:\gdut\software\glut-lib" /IC:\Qt\4.8.5\include\QtCore /IC:\Qt\4.8.5\include\QtGui /IC:\Qt\4.8.5\include\QtOpenGL /IC:\Qt\4.8.5\include\QtXml /IC:\Qt\4.8.5\include\QtXmlPatterns /IC:\Qt\4.8.5\include\QtScript /IC:\Qt\4.8.5\include /I..\.. /I..\..\..\..\vcglib /I"..\..\external\glew-1.7.0\include" /IC:\Qt\4.8.5\include\ActiveQt /Idebug /IC:\Qt\4.8.5\mkspecs\default /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D NOMINMAX /D GLEW_STATIC /D _USE_MATH_DEFINES /D _CRT_SECURE_NO_DEPRECATE /D QT_DLL /D QT_PLUGIN /D QT_SCRIPT_LIB /D QT_XMLPATTERNS_LIB /D QT_XML_LIB /D QT_OPENGL_LIB /D QT_GUI_LIB /D QT_CORE_LIB /D QT_HAVE_MMX /D QT_HAVE_3DNOW /D QT_HAVE_SSE /D QT_HAVE_MMXEXT /D QT_HAVE_SSE2 /D QT_THREAD_SUPPORT /D _WINDLL /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt decorate_base.cpp -Zm200 -w34100 -w34189 
          decorate_base.cpp
      1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
@@ -119,28 +98,12 @@
                  [
                      ScalarType=float
                  ]
-         moc_decorate_base.cpp
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/complex/algorithms/update/color.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>D:\meshlab133\meshlab\src\common/interfaces.h(429): warning C4138: 在注释外找到“*/”
-     1>D:\meshlab133\meshlab\src\common/interfaces.h(486): warning C4138: 在注释外找到“*/”
-     1>D:\meshlab133\meshlab\src\common/interfaces.h(487): warning C4138: 在注释外找到“*/”
-     1>D:\meshlab133\meshlab\src\common/interfaces.h(497): warning C4138: 在注释外找到“*/”
-     1>D:\meshlab133\meshlab\src\common/interfaces.h(499): warning C4138: 在注释外找到“*/”
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\generatedfiles\debug\../../decorate_base.h(159): warning C4138: 在注释外找到“*/”
-         qrc_decorate_base.cpp
-         正在生成代码...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\..\distrib\plugins\\decorate_base.dll" /NOLOGO /LIBPATH:"D:\gdut\software\glut-lib" /LIBPATH:C:\Qt\4.8.5\lib glu32.lib opengl32.lib gdi32.lib user32.lib ../../distrib/common.lib C:\Qt\4.8.5\lib\QtScriptd4.lib C:\Qt\4.8.5\lib\QtXmlPatternsd4.lib C:\Qt\4.8.5\lib\QtXmld4.lib C:\Qt\4.8.5\lib\QtOpenGLd4.lib C:\Qt\4.8.5\lib\QtGuid4.lib C:\Qt\4.8.5\lib\QtCored4.lib glut.lib glut32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Win32\Debug\decorate_base.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\meshlab133\meshlab\src\distrib\plugins\decorate_base.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /DLL Win32\Debug\coordinateframe.obj
          Win32\Debug\decorate_base.obj
          Win32\Debug\moc_decorate_base.obj
          Win32\Debug\qrc_decorate_base.obj
+         LINK : 没有找到 ..\..\distrib\plugins\\decorate_base.dll 或上一个增量链接没有生成它；正在执行完全链接
             正在创建库 ..\..\distrib\plugins\\decorate_base.lib 和对象 ..\..\distrib\plugins\\decorate_base.exp
          decorate_base.vcxproj -> D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\..\..\distrib\plugins\decorate_base.dll
        Manifest:
@@ -148,8 +111,8 @@
        FinalizeBuildStatus:
          正在删除文件“Win32\Debug\decorate_base.unsuccessfulbuild”。
          正在对“Win32\Debug\decorate_base.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\decorate_base.vcxproj”(rebuild 个目标)的操作。
+     1>已完成生成项目“D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\decorate_base.vcxproj”(build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:28.40
+已用时间 00:00:10.89
