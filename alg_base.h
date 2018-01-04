@@ -56,7 +56,6 @@ return h1(x.first) ^ h2(x.second);
 				CFaceO f = *fi;  	
 				f.V0(0)->Base().CurvatureEnabled=true;
 
-
 			//	float areaf=0.5f*normalf.Norm();  
 			//	vcg::Point3f nr = normalf.Normalize();
 				vcg::Point3f bc = Barycenter(f);
@@ -69,7 +68,8 @@ return h1(x.first) ^ h2(x.second);
 				countNablaOfFace(f,kh_i,kh_j,kh_k,nabla_f);
 
 				vcg::Point3f start = Barycenter(f);
-				vcg::Point3f end =  start + (nabla_f*4);
+				//vcg::Point3f end =  start + (nabla_f*4);
+				vcg::Point3f end =  start + (nabla_f);
 				//vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end
 
 				kexi.insert(pair<int,Point3f&>((*fi).Index(),end-start));

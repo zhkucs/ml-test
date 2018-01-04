@@ -477,12 +477,12 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			float NormalLen=rm->getFloat(NormalLength());
 			float LineLen = m.cm.bbox.Diag()*NormalLen;
 
-			std::map<int,Point3f> kexi;
-		    gdut_base::buildKexi(m,kexi);
+			if(m_xi.size()==0)
+				gdut_base::buildKexi(m,m_xi);
 
-			// 求无旋场Di
-			VectorXd x;
-			gdut::countCurlfree(m,kexi,x);
+			// 求无旋场m_cf
+			if(m_cf.size() == 0)
+				gdut::countCurlfree(m,m_xi,m_cf);
 
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi; 
@@ -491,9 +491,9 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				CVertexO* v0 = f.V(0);
 				CVertexO* v1 = f.V(1);
 				CVertexO* v2 = f.V(2);
-				double s0=x[v0->Index()];
-				double s1=x[v1->Index()];
-				double s2=x[v2->Index()];
+				double s0=m_cf[v0->Index()];
+				double s1=m_cf[v1->Index()];
+				double s2=m_cf[v2->Index()];
 				vcg::Point3f nablaD;
 				gdut_base::countNablaOfFace(f,s0,s1,s2,nablaD);
 				vcg::Point3f start = Barycenter(f) ;
@@ -524,20 +524,21 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			float NormalLen=rm->getFloat(NormalLength());
 			float LineLen = m.cm.bbox.Diag()*NormalLen;
 
-			std::map<int,Point3f> kexi;
-		    gdut_base::buildKexi(m,kexi);
+			if(m_xi.size()==0)
+				gdut_base::buildKexi(m,m_xi);
 
 			// 求无旋场df
-			std::map<int,Point3f> df;
+			
 			//gdut_curl::countDivfree(m,kexi,df);
-			gdut_div_free::countDivfree(m,kexi,df);
+			if(m_df.size()==0)
+				gdut_div_free::countDivfree(m,m_xi,m_df);
 
 			int n = 0;
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi; 
 				vcg::Point3f bc = Circumcenter(f);// 外心
-				vcg::Point3f end =  bc  + df[f.Index()];
-				assert(df[f.Index()].Norm()<100000000);
+				vcg::Point3f end =  bc  + m_df[f.Index()];
+				assert(m_df[f.Index()].Norm()<100000000);
 
 				vcg::Point3f normalf=NormalizedNormal(f); 
 				double r = Distance(f.V(0)->P(),bc);
@@ -567,6 +568,8 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			float NormalLen=rm->getFloat(NormalLength());
 			float LineLen = m.cm.bbox.Diag()*NormalLen;
 
+			if(m_xi.size()==0)
+				gdut_base::buildKexi(m,m_xi);
 
 			glDisable(GL_LIGHTING);
 			glDisable(GL_TEXTURE_2D);
@@ -575,40 +578,15 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi;  	
 				f.V0(0)->Base().CurvatureEnabled=true;
-				float kh_i = f.V0(0)->Kh();
-				float kh_j = f.V0(1)->Kh();
-				float kh_k = f.V0(2)->Kh();
 
-				vcg::Point3f nabla_f;
-				gdut_base::countNablaOfFace(f,kh_i,kh_j,kh_k,nabla_f);
-
-				vcg::Point3f bc = Barycenter(f);
-				double r = Distance(f.P0(0),bc);				
-
-				vcg::Point3f start = Barycenter(f);
-				//vcg::Point3f end =  start + (nabla_f*4);
-				vcg::Point3f end =  start + (nabla_f*2);
+				vcg::Point3f start = Circumcenter(f);// 外心
+				double r = Distance(f.V(0)->P(),start);
+				vcg::Point3f end = m_xi[f.Index()] ;
 				vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end
 				
-				//x轴
-				//	glBegin(GL_LINES);
-				//	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-				//	glVertex(start);
-				//	glVertex(newEnd);
-				//	glEnd();
-				//	glFlush();
-
-				//	glPushMatrix();	
-				//	glTranslatef(end.X(), end.Y(), end.Z());
-				/////	glRotatef(angleRad,rotAxis.X(),rotAxis.Y(),rotAxis.Z());
-				////	glutSolidCone(0.027,0.09,10,10);
-				//	//glutWireCone(0.027,0.09,10,10);
-				//	glPopMatrix();
-				//	glFlush();
-				if(r > (start - end).Norm()/4){
-				
-				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
-				drawArrow(start ,end,normalf,gdut_base::Blue);	
+				if(r > (start - end).Norm()/4){				
+					vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
+					drawArrow(start ,newEnd,normalf,gdut_base::Blue);	
 				}
 				//start
 			}

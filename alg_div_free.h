@@ -51,9 +51,9 @@ namespace gdut_div_free{
 		float b3 = b.Z();
 
 		A.setZero();
-		A << -(a2*b2+a3*b3), a2*b1 ,       a3*b1,
+		A << -(a2*b2+a3*b3), a2*b1,         a3*b1,
 			 -a1*b2,         a1*b1+a3*b3,  -a3*b2,
-			a1*b3,           a2*b3,        -(a1*b1+a2*b2);
+			 a1*b3,          a2*b3,        -(a1*b1+a2*b2);
 	}
 
 	void set(Eigen::SparseMatrix<double> &L,int vi,int vj,Matrix3d& m){
