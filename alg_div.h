@@ -28,9 +28,7 @@ namespace gdut{
 				// get vertex indices
 				int row = v0->Index();		
 
-				// compute cotangent of the angle at the current vertex
-				// (equal to cosine over sine, which equals the dot
-				// product over the norm of the cross product)
+
 				vcg::Point3f u12 = v2->P() - v1->P();
 				vcg::Point3f u01 = v1->P() - v0->P();
 				vcg::Point3f normal_face=(u01^u12).Normalize();
