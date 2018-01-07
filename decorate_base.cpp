@@ -37,6 +37,7 @@
 //#include "QuaternionMatrix.h"
 //#include "algorithm.h"
 #include "alg_base.h"
+
 #include "alg_div.h"
 #include "alg_curl.h"
 #include "alg_div_free.h"
@@ -477,33 +478,29 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			float NormalLen=rm->getFloat(NormalLength());
 			float LineLen = m.cm.bbox.Diag()*NormalLen;
 
-			if(m_xi.size()==0)
-				gdut_base::buildKexi(m,m_xi);
+			if(m_kexi.size()==0)
+				gdut_base::buildKexi(m,m_kexi);
 
-			// 求无旋场m_cf
-			if(m_cf.size() == 0)
-				gdut::countCurlfree(m,m_xi,m_cf);
+			// 求无旋场Di
+			if(m_x.size() == 0)
+				gdut_curl_free::countCurlfree(m,m_kexi,m_x);
 
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi; 
-				vcg::Point3f bc = Barycenter(f);
 
-				CVertexO* v0 = f.V(0);
-				CVertexO* v1 = f.V(1);
-				CVertexO* v2 = f.V(2);
-				double s0=m_cf[v0->Index()];
-				double s1=m_cf[v1->Index()];
-				double s2=m_cf[v2->Index()];
 				vcg::Point3f nablaD;
-				gdut_base::countNablaOfFace(f,s0,s1,s2,nablaD);
+				gdut_curl_free::count_nabla_U(f,m_x,nablaD);
+
 				vcg::Point3f start = Barycenter(f) ;
-				vcg::Point3f end =  start  + nablaD;
+				vcg::Point3f end =  start  + nablaD*0.04;
 
 				vcg::Point3f normalf=NormalizedNormal(f); 
-				double r = Distance(v0->P(),start);
+				double r = Distance(f.V(0)->P(),start);
 				vcg::Point3f newEnd = standardize(start,end,r);
 				//if(r < (start - newEnd).Norm()/3)
-					gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
+					//gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
+				if((end - start).Norm() < 1)
+					gdut_base::drawArrow(start ,end,normalf,gdut_base::Red);
 			}
 
 		}
@@ -524,14 +521,12 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			float NormalLen=rm->getFloat(NormalLength());
 			float LineLen = m.cm.bbox.Diag()*NormalLen;
 
-			if(m_xi.size()==0)
-				gdut_base::buildKexi(m,m_xi);
-
-			// 求无旋场df
+			if(m_kexi.size()==0)
+				gdut_base::buildKexi(m,m_kexi);
 			
 			//gdut_curl::countDivfree(m,kexi,df);
-			if(m_df.size()==0)
-				gdut_div_free::countDivfree(m,m_xi,m_df);
+			if(m_df.size() == 0)
+				gdut_div_free::countDivfree(m,m_kexi,m_df);
 
 			int n = 0;
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
@@ -543,11 +538,69 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f normalf=NormalizedNormal(f); 
 				double r = Distance(f.V(0)->P(),bc);
 				vcg::Point3f newEnd = standardize(bc,end,r);
-				gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Red);
-				//gdut_base::drawArrow(bc ,end,normalf,gdut_base::Red);
+				gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Green);
+				/*if((end - bc).Norm() < r)
+					gdut_base::drawArrow(bc ,end,normalf,gdut_base::Green);*/
 				n++;
 			}
 			//assert(n==200);
+		}
+		break;
+
+		case DP_HHD_HARMONEY:
+		{
+			m.updateDataMask(MeshModel::MM_VERTCURV | MeshModel::MM_VERTCURVDIR);
+
+			m.cm.face.EnableFFAdjacency();// 必须要加上，否则bunny无法算出曲率
+			tri::UpdateCurvature<CMeshO>::MeanAndGaussian(m.cm);
+			tri::UpdateQuality<CMeshO>::VertexFromMeanCurvatureHG(m.cm);
+			m.cm.face.EnableVFAdjacency();
+			m.cm.vert.EnableVFAdjacency();
+
+			tri::UpdateTopology<CMeshO>::VertexFace(m.cm);
+
+			float NormalLen=rm->getFloat(NormalLength());
+			float LineLen = m.cm.bbox.Diag()*NormalLen;
+
+			if(m_kexi.size()==0)
+				gdut_base::buildKexi(m,m_kexi);
+
+			// 求无旋场df
+			
+			//gdut_curl::countDivfree(m,kexi,df);
+			if(m_df.size() == 0)
+				gdut_div_free::countDivfree(m,m_kexi,m_df);
+
+			// 求无旋场Di
+			if(m_x.size() == 0)
+				gdut_curl_free::countCurlfree(m,m_kexi,m_x);
+
+			int n = 0;
+			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
+				CFaceO f = *fi; 
+				vcg::Point3f bc = Circumcenter(f);// 外心
+
+				// 求▼u
+				vcg::Point3f nablaU;
+				gdut_curl_free::count_nabla_U(f,m_x,nablaU);
+
+				// 求▼ X V
+				vcg::Point3f nablaV = m_df[f.Index()];
+
+				// 求h
+				vcg::Point3f h = m_kexi[f.Index()] - nablaV - nablaU;
+
+				vcg::Point3f start = Barycenter(f) ;
+				vcg::Point3f end = start + h;
+
+				vcg::Point3f normalf=NormalizedNormal(f); 
+				double r = Distance(f.V(0)->P(),bc);
+				vcg::Point3f newEnd = standardize(bc,end,r);
+				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Red);
+				if((end - bc).Norm() < 1)
+					gdut_base::drawArrow(bc ,end,normalf,gdut_base::Green);
+				n++;
+			}
 		}
 		break;
 	case DP_MEAN_CURVATURE:
@@ -568,8 +621,6 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			float NormalLen=rm->getFloat(NormalLength());
 			float LineLen = m.cm.bbox.Diag()*NormalLen;
 
-			if(m_xi.size()==0)
-				gdut_base::buildKexi(m,m_xi);
 
 			glDisable(GL_LIGHTING);
 			glDisable(GL_TEXTURE_2D);
@@ -578,15 +629,40 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi;  	
 				f.V0(0)->Base().CurvatureEnabled=true;
+				float kh_i = f.V0(0)->Kh();
+				float kh_j = f.V0(1)->Kh();
+				float kh_k = f.V0(2)->Kh();
 
-				vcg::Point3f start = Circumcenter(f);// 外心
-				double r = Distance(f.V(0)->P(),start);
-				vcg::Point3f end = m_xi[f.Index()] ;
+				vcg::Point3f nabla_f;
+				gdut_base::countNablaOfFace(f,kh_i,kh_j,kh_k,nabla_f);
+
+				vcg::Point3f bc = Barycenter(f);
+				double r = Distance(f.P0(0),bc);				
+
+				vcg::Point3f start = Barycenter(f);
+				//vcg::Point3f end =  start + (nabla_f*4);
+				vcg::Point3f end =  start + (nabla_f*2);
 				vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end
 				
-				if(r > (start - end).Norm()/4){				
-					vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
-					drawArrow(start ,newEnd,normalf,gdut_base::Blue);	
+				//x轴
+				//	glBegin(GL_LINES);
+				//	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+				//	glVertex(start);
+				//	glVertex(newEnd);
+				//	glEnd();
+				//	glFlush();
+
+				//	glPushMatrix();	
+				//	glTranslatef(end.X(), end.Y(), end.Z());
+				/////	glRotatef(angleRad,rotAxis.X(),rotAxis.Y(),rotAxis.Z());
+				////	glutSolidCone(0.027,0.09,10,10);
+				//	//glutWireCone(0.027,0.09,10,10);
+				//	glPopMatrix();
+				//	glFlush();
+				if(r > (start - end).Norm()/4){
+				
+				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
+				drawArrow(start ,end,normalf,gdut_base::Blue);	
 				}
 				//start
 			}

@@ -28,8 +28,6 @@
 #include <wrap/gui/coordinateframe.h>
 #include "colorhistogram.h"
 
-using namespace Eigen;
-
 class QGLShaderProgram;
 typedef vcg::ColorHistogram<float>  CHist;
 
@@ -85,10 +83,9 @@ private:
   void drawHistogram(QGLWidget *gla, CHist &ch);
 
   bool countOnce;
-
-  std::map<int,vcg::Point3f> m_xi;
-  VectorXd m_cf;
-  std::map<int,vcg::Point3f> m_df;// 每个face上的无散度的向量场
+  std::map<int,vcg::Point3f> m_kexi;
+  Eigen::VectorXd m_x;
+  std::map<int,vcg::Point3f> m_df;
 public:
 
   ExtraMeshDecoratePlugin()
