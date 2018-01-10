@@ -99,7 +99,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="alg_div_free.h">
-      <Filter>Generated Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

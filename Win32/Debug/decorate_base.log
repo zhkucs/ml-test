@@ -1,8 +1,8 @@
-﻿生成启动时间为 1/7/2018 9:54:00 PM。
+﻿生成启动时间为 1/11/2018 7:06:44 AM。
      1>项目“D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\decorate_base.vcxproj”在节点 2 上(build 个目标)。
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(298,5): warning MSB8004: Intermediate 目录未以斜杠结尾。此生成实例将添加斜杠，因为必须有这个斜杠才能正确计算 Intermediate 目录。
      1>InitializeBuildStatus:
-         正在创建“Win32\Debug\decorate_base.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“Win32\Debug\decorate_base.unsuccessfulbuild”执行 Touch 任务。
        CustomBuild:
          所有输出均为最新。
        ClCompile:
@@ -57,16 +57,16 @@
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(160): warning C4189: “meanX”: 局部变量已初始化但不引用
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(147): warning C4189: “minb”: 局部变量已初始化但不引用
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(175): warning C4189: “begin”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(675): warning C4018: “<”: 有符号/无符号不匹配
+     1>decorate_base.cpp(677): warning C4018: “<”: 有符号/无符号不匹配
      1>decorate_base.cpp(479): warning C4189: “LineLen”: 局部变量已初始化但不引用
      1>decorate_base.cpp(522): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(563): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(622): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(680): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(696): warning C4189: “areaf”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(1614): warning C4100: “painter”: 未引用的形参
-     1>decorate_base.cpp(1627): warning C4189: “ln”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(1665): warning C4138: 在注释外找到“*/”
+     1>decorate_base.cpp(565): warning C4189: “LineLen”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(624): warning C4189: “LineLen”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(682): warning C4189: “LineLen”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(698): warning C4189: “areaf”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(1616): warning C4100: “painter”: 未引用的形参
+     1>decorate_base.cpp(1629): warning C4189: “ln”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(1667): warning C4138: 在注释外找到“*/”
      1>C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\xutility(2692): warning C4244: “=”: 从“const int”转换到“float”，可能丢失数据
                  C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\xutility(2715): 参见对正在编译的函数 模板 实例化“void std::_Fill<float*,_Ty>(_FwdIt,_FwdIt,const _Ty &)”的引用
                  with
@@ -91,7 +91,7 @@
                  [
                      ScalarType=float
                  ]
-                 decorate_base.cpp(1496): 参见对正在编译的类 模板 实例化“vcg::ColorHistogram<ScalarType>”的引用
+                 decorate_base.cpp(1498): 参见对正在编译的类 模板 实例化“vcg::ColorHistogram<ScalarType>”的引用
                  with
                  [
                      ScalarType=float
@@ -113,4 +113,4 @@
 
 生成成功。
 
-已用时间 00:00:10.80
+已用时间 00:00:10.30

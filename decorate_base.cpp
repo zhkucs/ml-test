@@ -500,7 +500,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				//if(r < (start - newEnd).Norm()/3)
 					//gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
 				if((end - start).Norm() < 1)
-					gdut_base::drawArrow(start ,end,normalf,gdut_base::Red);
+					gdut_base::drawArrowOnFace(start ,end,normalf,gdut_base::Red);
 			}
 
 		}
@@ -538,9 +538,11 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f normalf=NormalizedNormal(f); 
 				double r = Distance(f.V(0)->P(),bc);
 				vcg::Point3f newEnd = standardize(bc,end,r);
-				gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Green);
-				/*if((end - bc).Norm() < r)
-					gdut_base::drawArrow(bc ,end,normalf,gdut_base::Green);*/
+				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Green);
+				if((end - bc).Norm() < 2*r){
+					//gdut_base::drawArrowOnFace(bc ,end,normalf,gdut_base::Red);
+					gdut_base::drawArrow(bc ,end,gdut_base::Red);
+				}
 				n++;
 			}
 			//assert(n==200);
@@ -598,7 +600,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f newEnd = standardize(bc,end,r);
 				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Red);
 				if((end - bc).Norm() < 1)
-					gdut_base::drawArrow(bc ,end,normalf,gdut_base::Green);
+					gdut_base::drawArrowOnFace(bc ,end,normalf,gdut_base::Green);
 				n++;
 			}
 		}
@@ -662,7 +664,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				if(r > (start - end).Norm()/4){
 				
 				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
-				drawArrow(start ,end,normalf,gdut_base::Blue);	
+				drawArrowOnFace(start ,end,normalf,gdut_base::Blue);	
 				}
 				//start
 			}

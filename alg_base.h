@@ -95,7 +95,66 @@ return h1(x.first) ^ h2(x.second);
 	}
 
 
-	void drawArrow(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
+	void drawArrow(vcg::Point3f &origin,vcg::Point3f &dst,Color &color)
+{//////////////////////////////////////////
+	vcg::Point3f z(0,0,1);
+	vcg::Point3f x_axis(1,0,0);
+	vcg::Point3f y(0,1,0);	
+	vcg::Point3f zero(0,0,0);
+
+	vcg::Point3f diff(dst-origin);
+	
+
+	vcg::Point3f diff_xoy(diff.X(),diff.Y(),0);
+
+	vcg::Point3f axis2 = diff_xoy^ diff;
+
+	// 在xoy面上画箭头两翼（尖端为dst）
+	double rad = 0.15;	
+	vcg::Point3f g = dst - origin;
+	float wing = g.Norm()*0.3;
+
+
+
+	// 两次旋转角度
+	double angle1 = rad2angle(acos(diff.X()/diff_xoy.Norm()));// diff_xoy 与x轴夹角	
+	double angle2 = rad2angle(acos(diff_xoy.Norm()/diff.Norm()));// diff与diff_xoy的夹角
+
+	/// 画带箭头的直线
+	glLineWidth(1.0);	
+	glEnable(GL_LINE_SMOOTH);
+	/*glBegin(GL_LINES);
+	glVertex(origin);
+	glVertex(dst);	
+	glEnd();*/
+	float len = g.Norm();
+	glPushMatrix();			
+	glTranslatef(origin.X(), origin.Y(), origin.Z());
+	glRotatef(angle1,z.X(),z.Y(),z.Z());
+	glRotatef(angle2,axis2.X(),axis2.Y(),axis2.Z());
+
+	// 画箭头干
+	glBegin(GL_LINES);
+	glColor3f(color._r,color._g,color._b);
+	glVertex(zero);
+	glVertex(vcg::Point3f(len,0,0));	
+	glEnd();
+
+	vcg::Point3f rear1(len-wing*cos(rad),wing*sin(rad),0);
+	vcg::Point3f rear2(len-wing*cos(rad),-wing*sin(rad),0);
+	glBegin(GL_LINE_STRIP);		
+	//glColor3f(0.0,1.0,0);
+	glVertex(rear1);
+	glVertex(vcg::Point3f(len,0,0));
+	//glColor3f(0.0,0,1.0);
+	glVertex(rear2);
+	glEnd();
+	glPopMatrix();
+	glFlush();                                                                                                             
+	glDisable(GL_LINE_SMOOTH);
+}
+
+	void drawArrowOnFace(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
 {//////////////////////////////////////////
 	vcg::Point3f z(0,0,1);
 	vcg::Point3f x_axis(1,0,0);
