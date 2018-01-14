@@ -15,14 +15,14 @@ using namespace vcg;
 #define rad2angle( r) r*180/PI;
 namespace gdut_base{
 	//函数对象 用于对pair进行hash
-struct pairhash{
-template<class T1, class T2>
-size_t operator()(const pair<T1, T2> &x) const{ //为什么去掉最后的const编译无法通过？？？？？？？
-hash<T1> h1;
-hash<T2> h2;
-return h1(x.first) ^ h2(x.second); 
-}
-};
+	struct pairhash{
+		template<class T1, class T2>
+		size_t operator()(const pair<T1, T2> &x) const{ //为什么去掉最后的const编译无法通过？？？？？？？
+			hash<T1> h1;
+			hash<T2> h2;
+			return h1(x.first) ^ h2(x.second); 
+		}
+	};
 	struct Color{
 		Color(float r,float g,float b){
 			_r =r;
@@ -33,20 +33,27 @@ return h1(x.first) ^ h2(x.second);
 		
 	}Red(1,0,0),Green(0,1,0),Blue(0,0,1);
 
+	float countArea(CFaceO& f){
+		vcg::Point3f p_i = f.P(0);
+		vcg::Point3f p_j = f.P(1);
+		vcg::Point3f p_k = f.P(2);
+		vcg::Point3f vij=p_j-p_i;  
+		vcg::Point3f vik=-p_k-p_i;
+		return (vij ^ vik).Norm()/2;
+	}
+
 	void countNablaOfFace(CFaceO&f,double s0,double s1,double s2,vcg::Point3f&result){
 				vcg::Point3f p_i = f.P0(0); 
 				vcg::Point3f p_j = f.P0(1); 
 				vcg::Point3f p_k = f.P0(2); 
 
 				//梯度的计算参考了 http://blog.csdn.net/zdy0_2004/article/details/49615919
-				vcg::Point3f vij=f.P0(1)-f.P0(0);  
-				vcg::Point3f vik=f.P0(2)-f.P0(0);
-				float area = (vij ^ vik).Norm()/2;
+				double double_area =2*countArea(f);
 
 				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f); 
 
-				vcg::Point3f phi_j = normalf^(p_i-p_k)/(2*area);
-				vcg::Point3f phi_k = normalf^(p_j-p_i)/(2*area);
+				vcg::Point3f phi_j = normalf^(p_i-p_k)/double_area;
+				vcg::Point3f phi_k = normalf^(p_j-p_i)/double_area;
 
 				result=phi_j*(s1-s0)+phi_k*(s2-s0);	
 	}
@@ -85,14 +92,7 @@ return h1(x.first) ^ h2(x.second);
 		result= (p_j-p_k)^normal.Normalize()/normal.Norm();
 	}
 
-	float countArea(CFaceO& f){
-		vcg::Point3f p_i = f.P(0);
-		vcg::Point3f p_j = f.P(1);
-		vcg::Point3f p_k = f.P(2);
-		vcg::Point3f vij=p_j-p_i;  
-		vcg::Point3f vik=-p_k-p_i;
-		return (vij ^ vik).Norm()/2;
-	}
+	
 
 
 	void drawArrow(vcg::Point3f &origin,vcg::Point3f &dst,Color &color)

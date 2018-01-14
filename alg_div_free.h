@@ -43,12 +43,12 @@ namespace gdut_div_free{
 	}
 
 	void buildN2N(vcg::Point3f& a,vcg::Point3f& b,Matrix3d& A){
-		float a1 = a.X();
-		float a2 = a.Y();
-		float a3 = a.Z();
-		float b1 = b.X();
-		float b2 = b.Y();
-		float b3 = b.Z();
+		double a1 = a.X();
+		double a2 = a.Y();
+		double a3 = a.Z();
+		double b1 = b.X();
+		double b2 = b.Y();
+		double b3 = b.Z();
 
 		A.setZero();
 		A << -(a2*b2+a3*b3), a2*b1 ,       a3*b1,
@@ -95,7 +95,7 @@ namespace gdut_div_free{
 			vcg::Point3f nabla_phi2; 
 			gdut_base::countPhi(v2->P(),v0->P(),v1->P(),nabla_phi2);
 
-			float area = gdut_base::countArea(face);
+			double area = gdut_base::countArea(face);
 			nabla_v_face[std::make_pair(i0,f_idx)]=nabla_phi0*area;
 			nabla_v_face[std::make_pair(i1,f_idx)]=nabla_phi1*area;
 			nabla_v_face[std::make_pair(i2,f_idx)]=nabla_phi2*area;

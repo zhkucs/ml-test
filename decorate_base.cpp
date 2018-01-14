@@ -530,10 +530,11 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 
 			int n = 0;
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
-				CFaceO f = *fi; 
+				CFaceO f = *fi;
+				assert(m_df[f.Index()].Norm()<100000000);
+				 
 				vcg::Point3f bc = Circumcenter(f);// ÍâÐÄ
 				vcg::Point3f end =  bc  + m_df[f.Index()];
-				assert(m_df[f.Index()].Norm()<100000000);
 
 				vcg::Point3f normalf=NormalizedNormal(f); 
 				double r = Distance(f.V(0)->P(),bc);
