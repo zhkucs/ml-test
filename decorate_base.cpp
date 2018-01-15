@@ -540,10 +540,11 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				double r = Distance(f.V(0)->P(),bc);
 				vcg::Point3f newEnd = standardize(bc,end,r);
 				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Green);
-				if((end - bc).Norm() < 2*r){
-					//gdut_base::drawArrowOnFace(bc ,end,normalf,gdut_base::Red);
-					gdut_base::drawArrow(bc ,end,gdut_base::Red);
-				}
+				//if((end - bc).Norm() < 2*r){
+					//gdut_base::drawArrowOnFace(bc ,newEnd,normalf,gdut_base::Red);// bunny-half要newEnd才可以看到效果
+				
+					gdut_base::drawArrow(bc ,newEnd,gdut_base::Red);
+				//}
 				n++;
 			}
 			//assert(n==200);
@@ -665,7 +666,9 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				if(r > (start - end).Norm()/4){
 				
 				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
-				drawArrowOnFace(start ,end,normalf,gdut_base::Blue);	
+				//drawArrowOnFace(start ,newEnd,normalf,gdut_base::Blue);	
+				drawArrow(start ,newEnd,gdut_base::Red);
+				drawStick(start ,newEnd,gdut_base::Blue);
 				}
 				//start
 			}
