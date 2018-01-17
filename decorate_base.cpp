@@ -500,7 +500,8 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				//if(r < (start - newEnd).Norm()/3)
 					//gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
 				if((end - start).Norm() < 1)
-					gdut_base::drawArrowOnFace(start ,end,normalf,gdut_base::Red);
+					//gdut_base::drawArrowOnFace(start ,end,normalf,gdut_base::Red);
+					gdut_base::drawStick(start ,newEnd,gdut_base::Orange);
 			}
 
 		}
@@ -528,6 +529,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			if(m_df.size() == 0)
 				gdut_div_free::countDivfree(m,m_kexi,m_df);
 
+
 			int n = 0;
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi;
@@ -541,9 +543,10 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f newEnd = standardize(bc,end,r);
 				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Green);
 				//if((end - bc).Norm() < 2*r){
-					//gdut_base::drawArrowOnFace(bc ,newEnd,normalf,gdut_base::Red);// bunny-half要newEnd才可以看到效果
+					gdut_base::drawArrowOnFace(bc ,newEnd,normalf,gdut_base::Red);// bunny-half要newEnd才可以看到效果
 				
-					gdut_base::drawArrow(bc ,newEnd,gdut_base::Red);
+				//	gdut_base::drawArrow(bc ,newEnd,gdut_base::Red);
+					gdut_base::drawStick(bc ,newEnd,gdut_base::Orange);
 				//}
 				n++;
 			}
@@ -645,7 +648,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 
 				vcg::Point3f start = Barycenter(f);
 				//vcg::Point3f end =  start + (nabla_f*4);
-				vcg::Point3f end =  start + (nabla_f*2);
+				vcg::Point3f end =  start + (nabla_f);
 				vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end
 				
 				//x轴
@@ -663,12 +666,11 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				//	//glutWireCone(0.027,0.09,10,10);
 				//	glPopMatrix();
 				//	glFlush();
-				if(r > (start - end).Norm()/4){
-				
+				if(r > (start - end).Norm()/2){				
 				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
 				//drawArrowOnFace(start ,newEnd,normalf,gdut_base::Blue);	
-				drawArrow(start ,newEnd,gdut_base::Red);
-				drawStick(start ,newEnd,gdut_base::Blue);
+				//drawArrow(start ,newEnd,gdut_base::Red);
+				drawStick(start ,end,gdut_base::Blue);
 				}
 				//start
 			}

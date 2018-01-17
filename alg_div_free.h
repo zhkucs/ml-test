@@ -121,10 +121,16 @@ namespace gdut_div_free{
 			Matrix3d m[3][3];
 			for(int i = 0; i < 3;i++){
 				vcg::Point3f ni = na[i];
-				for(int j = 0; j < 3;j++){
+				for(int j = i; j < 3;j++){
 					vcg::Point3f nj = na[j];	
 					buildN2N(ni,nj,m[i][j]);
 					set(L,v_idx[i],v_idx[j],m[i][j]);
+					if(i != j){
+						m[j][i] <<  m[i][j].coeff(0,0),-m[i][j].coeff(1,0),m[i][j].coeff(2,0),
+									-m[i][j].coeff(0,1),m[i][j].coeff(1,1),-m[i][j].coeff(2,1),
+									m[i][j].coeff(0,2),-m[i][j].coeff(1,2),m[i][j].coeff(2,2);
+						set(L,v_idx[j],v_idx[i],m[j][i]);
+					}
 
 				}
 			}

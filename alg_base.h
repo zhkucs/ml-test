@@ -6,6 +6,8 @@
 #include <common/interfaces.h>
 #include <vector>
 #include <math.h>
+#include "wrap/gl/gl_geometry.h"
+
 using namespace std;
 using namespace vcg;
 //typedef Eigen::Triplet<double> T;
@@ -31,7 +33,7 @@ namespace gdut_base{
 		}
 		float _r,_g,_b;
 		
-	}Red(1,0,0),Green(0,1,0),Blue(0,0,1);
+	}Red(1,0,0),Green(0,1,0),Blue(0,0,1),Orange(1,0.5f,0);
 
 	float countArea(CFaceO& f){
 		vcg::Point3f p_i = f.P(0);
@@ -106,7 +108,7 @@ namespace gdut_base{
 
 	vcg::Point3f diff_xoy(diff.X(),diff.Y(),0);
 
-	vcg::Point3f axis2 =diff^ diff_xoy ;
+	vcg::Point3f axis2 =diff_xoy^diff;
 
 	// 在xoy面上画箭头两翼（尖端为dst）
 	double rad = 0.15;	
@@ -119,6 +121,10 @@ namespace gdut_base{
 	double angle1 = rad2angle(acos(diff.X()/diff_xoy.Norm()));// diff_xoy 与x轴夹角	
 	double angle2 = rad2angle(asin(diff.Z()/diff.Norm()));// diff与diff_xoy的夹角
 
+	vcg::Point3f rotateAxis = x_axis ^ diff;
+	double r = asin(rotateAxis.Norm()/diff.Norm());
+	double angle3 = rad2angle(r);// diff与diff_xoy的夹角
+
 	/// 画带箭头的直线
 	glLineWidth(1.0);	
 	glEnable(GL_LINE_SMOOTH);
@@ -129,10 +135,12 @@ namespace gdut_base{
 	float len = g.Norm();
 	glPushMatrix();			
 	glTranslatef(origin.X(), origin.Y(), origin.Z());
-	glRotatef(angle1,z.X(),z.Y(),z.Z());
-	glRotatef(angle2,axis2.X(),axis2.Y(),axis2.Z());
+	//glRotatef(angle1,z.X(),z.Y(),z.Z());
+	//glRotatef(angle2,axis2.X(),axis2.Y(),axis2.Z());
 
-	// 画箭头干
+	glRotatef(angle3,rotateAxis.X(),rotateAxis.Y(),rotateAxis.Z());
+
+	// 画箭头干 
 	glBegin(GL_LINES);
 	glColor3f(color._r,color._g,color._b);
 	glVertex(zero);
@@ -155,14 +163,44 @@ namespace gdut_base{
 
 	void drawStick(vcg::Point3f &origin,vcg::Point3f &dst,Color &color)
 {//////////////////////////////////////////
-	
-	
 	// 画箭头干
 	glBegin(GL_LINES);
 	glColor3f(color._r,color._g,color._b);
 	glVertex(origin);
 	glVertex(dst);	
-	glEnd();	
+	glEnd();
+
+	GLdouble r = 0.05;
+	GLint m = 5;
+	GLint n = 5;
+	glPushMatrix();			
+	glTranslatef(origin.X(), origin.Y(), origin.Z());
+	vcg::glutSolidSphere(r, m, n); 
+	glPopMatrix();
+
+	glEnd();
+	glFlush();                                                                                                             
+	glDisable(GL_LINE_SMOOTH);
+}
+
+	void drawStickMapOnface(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
+{//////////////////////////////////////////
+	// 画箭头干
+	glBegin(GL_LINES);
+	glColor3f(color._r,color._g,color._b);
+	glVertex(origin);
+	glVertex(dst);	
+	glEnd();
+
+	GLdouble r = 0.05;
+	GLint m = 5;
+	GLint n = 5;
+	glPushMatrix();			
+	glTranslatef(origin.X(), origin.Y(), origin.Z());
+	vcg::glutSolidSphere(r, m, n); 
+	glPopMatrix();
+
+	glEnd();
 	glFlush();                                                                                                             
 	glDisable(GL_LINE_SMOOTH);
 }

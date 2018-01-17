@@ -1,4 +1,4 @@
-﻿生成启动时间为 1/15/2018 8:48:06 AM。
+﻿生成启动时间为 1/17/2018 12:54:14 PM。
      1>项目“D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\decorate_base.vcxproj”在节点 2 上(build 个目标)。
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(298,5): warning MSB8004: Intermediate 目录未以斜杠结尾。此生成实例将添加斜杠，因为必须有这个斜杠才能正确计算 Intermediate 目录。
      1>InitializeBuildStatus:
@@ -25,7 +25,10 @@
      1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>D:\meshlab133\vcglib\vcg/complex/algorithms/point_sampling.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_base.h(73): warning C4189: “r”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_base.h(75): warning C4189: “r”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_base.h(122): warning C4189: “angle2”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_base.h(121): warning C4189: “angle1”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_base.h(186): warning C4100: “normal”: 未引用的形参
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div.h(144): warning C4189: “maxb”: 局部变量已初始化但不引用
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div.h(143): warning C4189: “mean”: 局部变量已初始化但不引用
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div.h(150): warning C4189: “nZ”: 局部变量已初始化但不引用
@@ -48,25 +51,25 @@
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_curl.h(172): warning C4189: “begin”: 局部变量已初始化但不引用
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(21): warning C4189: “col”: 局部变量已初始化但不引用
      1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(73): warning C4189: “nV”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(146): warning C4189: “maxb”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(145): warning C4189: “mean”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(161): warning C4189: “maxbX”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(151): warning C4189: “nZ1”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(153): warning C4189: “nZ”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(162): warning C4189: “minbX”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(160): warning C4189: “meanX”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(147): warning C4189: “minb”: 局部变量已初始化但不引用
-     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(175): warning C4189: “begin”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(681): warning C4018: “<”: 有符号/无符号不匹配
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(152): warning C4189: “maxb”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(151): warning C4189: “mean”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(167): warning C4189: “maxbX”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(157): warning C4189: “nZ1”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(159): warning C4189: “nZ”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(168): warning C4189: “minbX”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(166): warning C4189: “meanX”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(153): warning C4189: “minb”: 局部变量已初始化但不引用
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\alg_div_free.h(181): warning C4189: “begin”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(683): warning C4018: “<”: 有符号/无符号不匹配
      1>decorate_base.cpp(479): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(522): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(567): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(626): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(686): warning C4189: “LineLen”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(702): warning C4189: “areaf”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(1620): warning C4100: “painter”: 未引用的形参
-     1>decorate_base.cpp(1633): warning C4189: “ln”: 局部变量已初始化但不引用
-     1>decorate_base.cpp(1671): warning C4138: 在注释外找到“*/”
+     1>decorate_base.cpp(523): warning C4189: “LineLen”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(570): warning C4189: “LineLen”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(629): warning C4189: “LineLen”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(688): warning C4189: “LineLen”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(704): warning C4189: “areaf”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(1622): warning C4100: “painter”: 未引用的形参
+     1>decorate_base.cpp(1635): warning C4189: “ln”: 局部变量已初始化但不引用
+     1>decorate_base.cpp(1673): warning C4138: 在注释外找到“*/”
      1>C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\xutility(2692): warning C4244: “=”: 从“const int”转换到“float”，可能丢失数据
                  C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\xutility(2715): 参见对正在编译的函数 模板 实例化“void std::_Fill<float*,_Ty>(_FwdIt,_FwdIt,const _Ty &)”的引用
                  with
@@ -91,7 +94,7 @@
                  [
                      ScalarType=float
                  ]
-                 decorate_base.cpp(1502): 参见对正在编译的类 模板 实例化“vcg::ColorHistogram<ScalarType>”的引用
+                 decorate_base.cpp(1504): 参见对正在编译的类 模板 实例化“vcg::ColorHistogram<ScalarType>”的引用
                  with
                  [
                      ScalarType=float
@@ -113,4 +116,4 @@
 
 生成成功。
 
-已用时间 00:00:23.21
+已用时间 00:00:08.81
