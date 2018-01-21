@@ -202,7 +202,7 @@ public:
 
   inline QString BBAbsParam() const { return  "MeshLab::Decoration::BBAbs" ; }
 
-  inline vcg::Point3f standardize(vcg::Point3f& start,vcg::Point3f& end,float max)
+  inline vcg::Point3f standardize(vcg::Point3f& start,vcg::Point3f& end,double max)
 {
 	vcg::Point3f diff = (start - end);	
 	double r = max / diff.Norm();

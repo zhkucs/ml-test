@@ -170,15 +170,15 @@ namespace gdut_base{
 	glVertex(dst);	
 	glEnd();
 
-	GLdouble r = 0.05;
-	GLint m = 5;
-	GLint n = 5;
+	GLdouble r = 0.0006;// bunny模型要用0.05，kitty要用0.0006
+	GLint m = 8;
+	GLint n = 8;
 	glPushMatrix();			
 	glTranslatef(origin.X(), origin.Y(), origin.Z());
 	vcg::glutSolidSphere(r, m, n); 
 	glPopMatrix();
 
-	glEnd();
+	//glEnd();
 	glFlush();                                                                                                             
 	glDisable(GL_LINE_SMOOTH);
 }

@@ -666,12 +666,12 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				//	//glutWireCone(0.027,0.09,10,10);
 				//	glPopMatrix();
 				//	glFlush();
-				if(r > (start - end).Norm()/2){				
+			//	if(r > (start - end).Norm()/2){				
 				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
 				//drawArrowOnFace(start ,newEnd,normalf,gdut_base::Blue);	
 				//drawArrow(start ,newEnd,gdut_base::Red);
-				drawStick(start ,end,gdut_base::Blue);
-				}
+				drawStick(start ,newEnd,gdut_base::Blue);// newEnd 而且不用if过滤，可以看到bunny的曲率梯度
+			//	}
 				//start
 			}
 
