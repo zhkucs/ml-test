@@ -101,7 +101,7 @@ namespace gdut_base{
 	}
 
 	//遍历的算法见 http://vcg.isti.cnr.it/vcglib/adjacency.html
-	void extremum_kh_one_ring(CVertexO * v,pair<int,int>& max_min_indice){
+	void extremum_kh_1_ring(CVertexO * v,pair<int,int>& max_min_indice){
 		float kh_v = v->Kh();		
 		max_min_indice.first = max_min_indice.second = v->Index();
 		CMeshO::FacePointer fp = v->VFp();
@@ -114,6 +114,28 @@ namespace gdut_base{
 			float current_kh = pos.v->Kh();	
 			if(current_kh > kh_v) max_min_indice.first = pos.v->Index();
 			else if(current_kh < kh_v) max_min_indice.second = pos.v->Index();
+		
+			pos.FlipV();// 变回来
+			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
+			pos.FlipE();// 得到共面，共点的下一个cell（边不同）
+
+		}while(pos.f!=start);
+
+	}
+
+	void extremum_kh_2_ring(CVertexO * v){
+		pair<int,int>& max_min_indice;
+		float kh_v = v->Kh();		
+		max_min_indice.first = max_min_indice.second = v->Index();
+		CMeshO::FacePointer fp = v->VFp();
+		CFaceO* start = &fp[0];
+		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
+		do
+		{
+			pos.FlipV();// 得到共边&共面的另一个v
+
+			pair<int,int>& mmi(max_min_indice);
+			extremum_kh_1_ring(pos.v,mmi);
 		
 			pos.FlipV();// 变回来
 			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
