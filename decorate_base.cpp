@@ -492,16 +492,16 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				gdut_curl_free::count_nabla_U(f,m_x,nablaD);
 
 				vcg::Point3f start = Barycenter(f) ;
-				vcg::Point3f end =  start  + nablaD*0.04;
+				vcg::Point3f end =  start  + nablaD;
 
 				vcg::Point3f normalf=NormalizedNormal(f); 
 				double r = Distance(f.V(0)->P(),start);
 				vcg::Point3f newEnd = standardize(start,end,r);
 				//if(r < (start - newEnd).Norm()/3)
 					//gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
-				if((end - start).Norm() < 1)
+				//if((end - start).Norm() < 1)
 					//gdut_base::drawArrowOnFace(start ,end,normalf,gdut_base::Red);
-					gdut_base::drawStick(start ,newEnd,gdut_base::Orange);
+					gdut_base::drawStick(start ,end,gdut_base::Orange);
 			}
 
 		}
@@ -623,6 +623,8 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			//  m.cm.face[i].EnableVFAdjacency();
 			//}
 			tri::UpdateTopology<CMeshO>::VertexFace(m.cm);
+			vcg::tri::UpdateTopology<CMeshO>::FaceFace(m.cm);
+			
 
 			glPushAttrib(GL_ENABLE_BIT );
 			float NormalLen=rm->getFloat(NormalLength());
@@ -633,12 +635,19 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			glDisable(GL_TEXTURE_2D);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+			
+
+			std::set<int> v_Chected;
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi;  	
+				
 				f.V0(0)->Base().CurvatureEnabled=true;
 				float kh_i = f.V0(0)->Kh();
 				float kh_j = f.V0(1)->Kh();
 				float kh_k = f.V0(2)->Kh();
+
+				gdut_base::showSingluarity(f,v_Chected);
 
 				vcg::Point3f nabla_f;
 				gdut_base::countNablaOfFace(f,kh_i,kh_j,kh_k,nabla_f);
@@ -649,31 +658,23 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f start = Barycenter(f);
 				//vcg::Point3f end =  start + (nabla_f*4);
 				vcg::Point3f end =  start + (nabla_f);
-				vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end
-				
-				//x轴
-				//	glBegin(GL_LINES);
-				//	glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-				//	glVertex(start);
-				//	glVertex(newEnd);
-				//	glEnd();
-				//	glFlush();
+				r = 0.005;// cat适合0.005；
+				vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end				
 
-				//	glPushMatrix();	
-				//	glTranslatef(end.X(), end.Y(), end.Z());
-				/////	glRotatef(angleRad,rotAxis.X(),rotAxis.Y(),rotAxis.Z());
-				////	glutSolidCone(0.027,0.09,10,10);
-				//	//glutWireCone(0.027,0.09,10,10);
-				//	glPopMatrix();
-				//	glFlush();
 			//	if(r > (start - end).Norm()/2){				
-				vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
+				//vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
 				//drawArrowOnFace(start ,newEnd,normalf,gdut_base::Blue);	
 				//drawArrow(start ,newEnd,gdut_base::Red);
 				drawStick(start ,newEnd,gdut_base::Blue);// newEnd 而且不用if过滤，可以看到bunny的曲率梯度
 			//	}
 				//start
 			}
+
+			/*for(CMeshO::VertexIterator vi=m.cm.vert.begin();vi!=m.cm.vert.end(); ++vi){
+				CVertexO v = *vi;
+				v.Base().CurvatureEnabled=true;
+				
+			}*/
 
 			glPopAttrib();
 		} break;
