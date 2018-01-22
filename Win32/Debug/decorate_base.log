@@ -1,4 +1,4 @@
-﻿生成启动时间为 1/22/2018 8:25:53 AM。
+﻿生成启动时间为 1/22/2018 12:07:30 PM。
      1>项目“D:\meshlab133\meshlab\src\meshlabplugins\decorate_base\decorate_base.vcxproj”在节点 2 上(build 个目标)。
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(298,5): warning MSB8004: Intermediate 目录未以斜杠结尾。此生成实例将添加斜杠，因为必须有这个斜杠才能正确计算 Intermediate 目录。
      1>InitializeBuildStatus:
@@ -6,7 +6,22 @@
        CustomBuild:
          所有输出均为最新。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ID:\meshlab133\vcglib\eigenlib /ID:\spinxform_opengl\include /ID:\meshlab133\vcglib\vcg\complex\algorithms\update /I"D:\gdut\software\glut-lib" /IC:\Qt\4.8.5\include\QtCore /IC:\Qt\4.8.5\include\QtGui /IC:\Qt\4.8.5\include\QtOpenGL /IC:\Qt\4.8.5\include\QtXml /IC:\Qt\4.8.5\include\QtXmlPatterns /IC:\Qt\4.8.5\include\QtScript /IC:\Qt\4.8.5\include /I..\.. /I..\..\..\..\vcglib /I"..\..\external\glew-1.7.0\include" /IC:\Qt\4.8.5\include\ActiveQt /Idebug /IC:\Qt\4.8.5\mkspecs\default /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D NOMINMAX /D GLEW_STATIC /D _USE_MATH_DEFINES /D _CRT_SECURE_NO_DEPRECATE /D QT_DLL /D QT_PLUGIN /D QT_SCRIPT_LIB /D QT_XMLPATTERNS_LIB /D QT_XML_LIB /D QT_OPENGL_LIB /D QT_GUI_LIB /D QT_CORE_LIB /D QT_HAVE_MMX /D QT_HAVE_3DNOW /D QT_HAVE_SSE /D QT_HAVE_MMXEXT /D QT_HAVE_SSE2 /D QT_THREAD_SUPPORT /D _WINDLL /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt decorate_base.cpp -Zm200 -w34100 -w34189 
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ID:\meshlab133\vcglib\eigenlib /ID:\spinxform_opengl\include /ID:\meshlab133\vcglib\vcg\complex\algorithms\update /I"D:\gdut\software\glut-lib" /IC:\Qt\4.8.5\include\QtCore /IC:\Qt\4.8.5\include\QtGui /IC:\Qt\4.8.5\include\QtOpenGL /IC:\Qt\4.8.5\include\QtXml /IC:\Qt\4.8.5\include\QtXmlPatterns /IC:\Qt\4.8.5\include\QtScript /IC:\Qt\4.8.5\include /I..\.. /I..\..\..\..\vcglib /I"..\..\external\glew-1.7.0\include" /IC:\Qt\4.8.5\include\ActiveQt /Idebug /IC:\Qt\4.8.5\mkspecs\default /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D NOMINMAX /D GLEW_STATIC /D _USE_MATH_DEFINES /D _CRT_SECURE_NO_DEPRECATE /D QT_DLL /D QT_PLUGIN /D QT_SCRIPT_LIB /D QT_XMLPATTERNS_LIB /D QT_XML_LIB /D QT_OPENGL_LIB /D QT_GUI_LIB /D QT_CORE_LIB /D QT_HAVE_MMX /D QT_HAVE_3DNOW /D QT_HAVE_SSE /D QT_HAVE_MMXEXT /D QT_HAVE_SSE2 /D QT_THREAD_SUPPORT /D _WINDLL /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t- /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\Debug\moc_decorate_base.cpp decorate_base.cpp -Zm200 -w34100 -w34189 
+         moc_decorate_base.cpp
+     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\vcglib\vcg/complex/algorithms/update/color.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D:\meshlab133\meshlab\src\common/interfaces.h(429): warning C4138: 在注释外找到“*/”
+     1>D:\meshlab133\meshlab\src\common/interfaces.h(486): warning C4138: 在注释外找到“*/”
+     1>D:\meshlab133\meshlab\src\common/interfaces.h(487): warning C4138: 在注释外找到“*/”
+     1>D:\meshlab133\meshlab\src\common/interfaces.h(497): warning C4138: 在注释外找到“*/”
+     1>D:\meshlab133\meshlab\src\common/interfaces.h(499): warning C4138: 在注释外找到“*/”
+     1>d:\meshlab133\meshlab\src\meshlabplugins\decorate_base\generatedfiles\debug\../../decorate_base.h(162): warning C4138: 在注释外找到“*/”
          decorate_base.cpp
      1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
      1>D:\meshlab133\vcglib\vcg/math/matrix44.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
@@ -99,6 +114,7 @@
                  [
                      ScalarType=float
                  ]
+         正在生成代码...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\..\distrib\plugins\\decorate_base.dll" /NOLOGO /LIBPATH:"D:\gdut\software\glut-lib" /LIBPATH:C:\Qt\4.8.5\lib glu32.lib opengl32.lib gdi32.lib user32.lib ../../distrib/common.lib C:\Qt\4.8.5\lib\QtScriptd4.lib C:\Qt\4.8.5\lib\QtXmlPatternsd4.lib C:\Qt\4.8.5\lib\QtXmld4.lib C:\Qt\4.8.5\lib\QtOpenGLd4.lib C:\Qt\4.8.5\lib\QtGuid4.lib C:\Qt\4.8.5\lib\QtCored4.lib glut.lib glut32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Win32\Debug\decorate_base.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\meshlab133\meshlab\src\distrib\plugins\decorate_base.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /DLL Win32\Debug\coordinateframe.obj
          Win32\Debug\decorate_base.obj
@@ -116,4 +132,4 @@
 
 生成成功。
 
-已用时间 00:00:09.13
+已用时间 00:00:12.57

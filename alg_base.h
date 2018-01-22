@@ -100,14 +100,35 @@ namespace gdut_base{
 		result= (p_j-p_k)^normal.Normalize()/normal.Norm();
 	}
 
-	//http://vcg.isti.cnr.it/vcglib/adjacency.html
+	//遍历的算法见 http://vcg.isti.cnr.it/vcglib/adjacency.html
+	void extremum_kh_one_ring(CVertexO * v,pair<int,int>& max_min_indice){
+		float kh_v = v->Kh();		
+		max_min_indice.first = max_min_indice.second = v->Index();
+		CMeshO::FacePointer fp = v->VFp();
+		CFaceO* start = &fp[0];
+		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
+		do
+		{
+			pos.FlipV();// 得到共边&共面的另一个v
+
+			float current_kh = pos.v->Kh();	
+			if(current_kh > kh_v) max_min_indice.first = pos.v->Index();
+			else if(current_kh < kh_v) max_min_indice.second = pos.v->Index();
+		
+			pos.FlipV();// 变回来
+			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
+			pos.FlipE();// 得到共面，共点的下一个cell（边不同）
+
+		}while(pos.f!=start);
+
+	}
 	VertexType countCenter(CVertexO * v){
 		float kh_v = v->Kh();
 		bool all_greater = true;
 		bool all_smaller = true;
 		CMeshO::FacePointer fp = v->VFp();
 		CFaceO* start = &fp[0];
-		vcg::face::Pos<CFaceO> pos(start,1,v);// constructor that takes face, edge and vertex
+		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
 		do
 		{
 			pos.FlipV();// 得到共边&共面的另一个v
@@ -115,7 +136,6 @@ namespace gdut_base{
 			float current_kh = pos.v->Kh();
 			all_greater = (all_greater&&current_kh >= kh_v);
 			all_smaller = (all_smaller&&current_kh <= kh_v);
-
 		
 			pos.FlipV();// 变回来
 			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
