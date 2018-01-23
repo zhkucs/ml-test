@@ -86,6 +86,9 @@ private:
   std::map<int,vcg::Point3f> m_kexi;
   Eigen::VectorXd m_x;
   std::map<int,vcg::Point3f> m_df;
+
+  std::set<vcg::Point3f> s_source;
+  std::set<vcg::Point3f> s_sink;
 public:
 
   ExtraMeshDecoratePlugin()

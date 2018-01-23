@@ -630,7 +630,6 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			float NormalLen=rm->getFloat(NormalLength());
 			float LineLen = m.cm.bbox.Diag()*NormalLen;
 
-
 			glDisable(GL_LIGHTING);
 			glDisable(GL_TEXTURE_2D);
 			glEnable(GL_BLEND);
@@ -638,7 +637,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 
 			
 
-			std::set<int> v_Chected;
+			
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi;  	
 				
@@ -647,7 +646,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				float kh_j = f.V0(1)->Kh();
 				float kh_k = f.V0(2)->Kh();
 
-				gdut_base::showSingluarity(f,v_Chected);
+				
 
 				vcg::Point3f nabla_f;
 				gdut_base::countNablaOfFace(f,kh_i,kh_j,kh_k,nabla_f);
@@ -670,11 +669,11 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				//start
 			}
 
-			/*for(CMeshO::VertexIterator vi=m.cm.vert.begin();vi!=m.cm.vert.end(); ++vi){
-				CVertexO v = *vi;
-				v.Base().CurvatureEnabled=true;
-				
-			}*/
+			if(s_source.size()==0)
+				gdut_base::findSingluarityOnMesh(m.cm,s_source,s_sink);
+
+			gdut_base::drawPoints(s_source,gdut_base::Blue);
+			gdut_base::drawPoints(s_sink,gdut_base::Red);
 
 			glPopAttrib();
 		} break;

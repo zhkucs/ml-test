@@ -101,79 +101,93 @@ namespace gdut_base{
 	}
 
 	//遍历的算法见 http://vcg.isti.cnr.it/vcglib/adjacency.html
-	void extremum_kh_1_ring(CVertexO * v,pair<int,int>& max_min_indice){
+	void extremum_kh_1_ring(CVertexO * v,std::set<int>& v_Chected,pair<int,int>& max_min_indice){
 		float kh_v = v->Kh();		
-		max_min_indice.first = max_min_indice.second = v->Index();
 		CMeshO::FacePointer fp = v->VFp();
 		CFaceO* start = &fp[0];
 		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
+		pos.FlipV();// 得到共边&共面的另一个v
 		do
 		{
-			pos.FlipV();// 得到共边&共面的另一个v
+			if(v_Chected.count(pos.v->Index())){
+				break;
+			}
 
 			float current_kh = pos.v->Kh();	
-			if(current_kh > kh_v) max_min_indice.first = pos.v->Index();
-			else if(current_kh < kh_v) max_min_indice.second = pos.v->Index();
+			if(current_kh > kh_v) 
+				max_min_indice.first = pos.v->Index();
+			else if(current_kh < kh_v) 
+				max_min_indice.second = pos.v->Index();
 		
-			pos.FlipV();// 变回来
+			//pos.FlipV();// 变回来
 			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
 			pos.FlipE();// 得到共面，共点的下一个cell（边不同）
 
 		}while(pos.f!=start);
-
 	}
 
-	void extremum_kh_2_ring(CVertexO * v){
-		pair<int,int>& max_min_indice;
+	VertexType extremum_kh_2_ring(CVertexO * v,std::set<int>& v_Chected){
+		pair<int,int>& max_min_indice = make_pair(v->Index(),v->Index());// first表示最大的顶点，second表示最小的顶点，初始化为当前v
 		float kh_v = v->Kh();		
-		max_min_indice.first = max_min_indice.second = v->Index();
+		// 取得第一个面开始遍历
 		CMeshO::FacePointer fp = v->VFp();
 		CFaceO* start = &fp[0];
 		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
+		pos.FlipV();// 得到共边&共面的另一个v
 		do
-		{
-			pos.FlipV();// 得到共边&共面的另一个v
+		{			
+			if(v_Chected.count(pos.v->Index())){
+				return TRIVAL;
+			}
 
 			pair<int,int>& mmi(max_min_indice);
-			extremum_kh_1_ring(pos.v,mmi);
+			extremum_kh_1_ring(pos.v,v_Chected,mmi);// 把局部的最大最小传入，如果2个都被更改。说明当前v是平凡的，不是2-ring中的最大/小。
+			if(max_min_indice.first !=mmi.first && max_min_indice.second!= mmi.second){
+				return TRIVAL;
+			}
 		
-			pos.FlipV();// 变回来
+			//pos.FlipV();// 变回来
 			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
 			pos.FlipE();// 得到共面，共点的下一个cell（边不同）
 
 		}while(pos.f!=start);
 
-	}
-	VertexType countCenter(CVertexO * v){
-		float kh_v = v->Kh();
-		bool all_greater = true;
-		bool all_smaller = true;
-		CMeshO::FacePointer fp = v->VFp();
-		CFaceO* start = &fp[0];
-		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
-		do
-		{
-			pos.FlipV();// 得到共边&共面的另一个v
+		if(max_min_indice.first == v->Index()){
+			v_Chected.insert(pos.v->Index());
+			return SINK;
+		}
+		if(max_min_indice.second == v->Index()){
+			v_Chected.insert(pos.v->Index());
+			return SOURCE;
+		}
 
-			float current_kh = pos.v->Kh();
-			all_greater = (all_greater&&current_kh >= kh_v);
-			all_smaller = (all_smaller&&current_kh <= kh_v);
-		
-			pos.FlipV();// 变回来
-			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
-			pos.FlipE();// 得到共面，共点的下一个cell（边不同）
-
-		}while(pos.f!=start);
-		if(all_greater) return SINK;
-		if(all_smaller) return SOURCE;
 		return TRIVAL;
-
 	}
+	//VertexType countCenter(CVertexO * v){
+	//	float kh_v = v->Kh();
+	//	bool all_greater = true;
+	//	bool all_smaller = true;
+	//	CMeshO::FacePointer fp = v->VFp();
+	//	CFaceO* start = &fp[0];
+	//	vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
+	//	do
+	//	{
+	//		pos.FlipV();// 得到共边&共面的另一个v
 
+	//		float current_kh = pos.v->Kh();
+	//		all_greater = (all_greater&&current_kh >= kh_v);
+	//		all_smaller = (all_smaller&&current_kh <= kh_v);
+	//	
+	//		pos.FlipV();// 变回来
+	//		pos.FlipF();// 得到共边，共点的下一个cell（面不同）
+	//		pos.FlipE();// 得到共面，共点的下一个cell（边不同）
 
+	//	}while(pos.f!=start);
+	//	if(all_greater) return SINK;
+	//	if(all_smaller) return SOURCE;
+	//	return TRIVAL;
 
-
-
+	//}
 
 	void drawArrow(vcg::Point3f &origin,vcg::Point3f &dst,Color &color)
 	{//////////////////////////////////////////
@@ -283,6 +297,23 @@ namespace gdut_base{
 		glDisable(GL_LINE_SMOOTH);
 	}
 
+	void drawPoints(std::set<vcg::Point3f> &pts,Color &color)
+	{//////////////////////////////////////////
+
+		GLdouble r = 0.1;
+		GLint m = 5;
+		GLint n = 5;
+		glColor3f(color._r,color._g,color._b);
+		for(set<vcg::Point3f>::iterator it = pts.begin();it!= pts.end();it++){
+			glPushMatrix();			
+			glTranslatef((*it).X(), (*it).Y(), (*it).Z());
+			vcg::glutSolidSphere(r, m, n); 
+			glPopMatrix();	
+		}
+		glFlush();                                                                                                             
+		glDisable(GL_LINE_SMOOTH);
+	}
+
 
 	void drawArrowOnFace(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
 	{//////////////////////////////////////////
@@ -339,25 +370,34 @@ namespace gdut_base{
 	}
 
 	// 检查局部曲率最大/小的顶点，并画出
-	void showSingluarity(CFaceO& f,std::set<int>& v_Chected){
-		for(int i = 0; i < 3; i++){
-			CVertexO* v = f.V(i);
+	void findSingluarityOnVertex(CVertexO* v,std::set<int>& v_Chected,std::set<Point3f>& s_source,std::set<Point3f>& s_sink){		
 			if(v_Chected.count(v->Index())){// 检查顶点是否已经处理过
-				continue;
+				return;
 			}
-			v_Chected.insert(v->Index());
-			gdut_base::VertexType vt = gdut_base::countCenter(v);
+			
+			//gdut_base::VertexType vt = gdut_base::countCenter(v);
+			gdut_base::VertexType vt = gdut_base::extremum_kh_2_ring(v,v_Chected);
 			switch(vt){
-			case gdut_base::SOURCE:
-				drawStick(v->P() ,v->P(),gdut_base::Red);
-				break;
-			case gdut_base::SINK:
-				drawStick(v->P() ,v->P(),gdut_base::Green);
-				break;
+				case gdut_base::SOURCE:
+					//drawStick(v->P() ,v->P(),gdut_base::Red);
+					s_source.insert(v->P());
+					v_Chected.insert(v->Index());
+					return;
+				case gdut_base::SINK:
+					//drawStick(v->P() ,v->P(),gdut_base::Green);
+					s_sink.insert(v->P());
+					v_Chected.insert(v->Index());
+					return;
 			}
-		}
 	}
 
+	// 根据顶点平均曲率找到2-ring极值顶点
+	void findSingluarityOnMesh(CMeshO& m,std::set<Point3f>& s_source,std::set<Point3f>& s_sink){
+		std::set<int> v_Chected;
+		for(CMeshO::VertexIterator fi=m.vert.begin();fi!=m.vert.end(); ++fi){				
+			gdut_base::findSingluarityOnVertex(&(*fi),v_Chected,s_source,s_sink);
+		}
+	}
 }
 
 #endif
