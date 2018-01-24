@@ -15,7 +15,7 @@ using namespace vcg;
 #define EPSLON 0.001
 #define PI 3.141592653589
 #define rad2angle( r) r*180/PI;
-# define KH_DIFF_THRESHOLD 0.01
+# define KH_DIFF_THRESHOLD 0.0000001
 #define  equal_by_threshold(v1,v2) (abs(v1-v2) < KH_DIFF_THRESHOLD)
 
 struct Color{
