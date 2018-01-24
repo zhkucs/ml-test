@@ -141,8 +141,8 @@ namespace gdut_curl_free{
 		buildB(m,kexi,b);
 
 		double mean = b.mean();
-		double maxb = b.maxCoeff();
-		double minb = b.minCoeff();
+//		double maxb = b.maxCoeff();
+	//	double minb = b.minCoeff();
 		
 		SparseMatrix<double> L(nV,nV);// ÏµÊý¾ØÕó|V|*|V|
 		L.reserve(6*nV);

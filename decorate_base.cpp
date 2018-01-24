@@ -29,14 +29,14 @@
 #include <wrap/qt/checkGLError.h>
 #include <wrap/qt/gl_label.h>
 #include <QGLShader>
-#include "glut.h"
+//#include "glut.h"
 #include "curvature.h"
 
 //#include "LinearSolver.h"// from spinxform
 //#include "Quaternion.h"
 //#include "QuaternionMatrix.h"
 //#include "algorithm.h"
-#include "alg_base.h"
+//#include "alg_base.h"
 
 #include "alg_div.h"
 #include "alg_curl.h"
@@ -49,8 +49,14 @@
 using namespace vcg;
 using namespace std;
 
+extern struct Color Red(1,0,0),Green(0,1,0),Blue(0,0,1),Orange(1,0.5f,0),Black(0,0,0);
+extern struct ShowParameter Bunny(0.5,0.05,0.5),Cat(0.005,0.0006,0.05);
 
 
+void ExtraMeshDecoratePlugin::initMap(){
+	  paraMap.insert(make_pair(std::string("bunny.off"),&Bunny));
+  paraMap.insert(make_pair(std::string("cat.obj"),&Cat));
+}
 QString ExtraMeshDecoratePlugin::decorationInfo(FilterIDType filter) const
 {
 	switch(filter)
@@ -484,7 +490,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			// 求无旋场Di
 			if(m_x.size() == 0)
 				gdut_curl_free::countCurlfree(m,m_kexi,m_x);
-
+			ShowParameter* para = paraMap[m.label().toLatin1().data()];
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi; 
 
@@ -501,7 +507,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 					//gdut_base::drawArrow(start ,newEnd,normalf,gdut_base::Red);
 				//if((end - start).Norm() < 1)
 					//gdut_base::drawArrowOnFace(start ,end,normalf,gdut_base::Red);
-					gdut_base::drawStick(start ,end,gdut_base::Orange);
+					gdut_base::drawStick(start ,newEnd,Orange,*para);
 			}
 
 		}
@@ -529,7 +535,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			if(m_df.size() == 0)
 				gdut_div_free::countDivfree(m,m_kexi,m_df);
 
-
+			ShowParameter* para = paraMap[m.label().toLatin1().data()];
 			int n = 0;
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi;
@@ -543,10 +549,10 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f newEnd = standardize(bc,end,r);
 				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Green);
 				//if((end - bc).Norm() < 2*r){
-					gdut_base::drawArrowOnFace(bc ,newEnd,normalf,gdut_base::Red);// bunny-half要newEnd才可以看到效果
+					gdut_base::drawArrowOnFace(bc ,newEnd,normalf,Red);// bunny-half要newEnd才可以看到效果
 				
 				//	gdut_base::drawArrow(bc ,newEnd,gdut_base::Red);
-					gdut_base::drawStick(bc ,newEnd,gdut_base::Orange);
+					gdut_base::drawStick(bc ,newEnd,Orange,*para);
 				//}
 				n++;
 			}
@@ -605,7 +611,7 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				vcg::Point3f newEnd = standardize(bc,end,r);
 				//gdut_base::drawArrow(bc ,newEnd,normalf,gdut_base::Red);
 				if((end - bc).Norm() < 1)
-					gdut_base::drawArrowOnFace(bc ,end,normalf,gdut_base::Green);
+					gdut_base::drawArrowOnFace(bc ,end,normalf,Green);
 				n++;
 			}
 		}
@@ -637,7 +643,9 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 
 			
 
-			
+			//QString str = m.shortName();
+			ShowParameter* para = paraMap[m.label().toLatin1().data()];
+			assert(para!= 0);
 			for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 				CFaceO f = *fi;  	
 				
@@ -656,15 +664,15 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 
 				vcg::Point3f start = Barycenter(f);
 				//vcg::Point3f end =  start + (nabla_f*4);
-				vcg::Point3f end =  start + (nabla_f);
-				r = 0.005;// cat适合0.005；
+				vcg::Point3f end =  start + (nabla_f)*4;
+				r = para->_r;// cat适合0.005；
 				vcg::Point3f newEnd = standardize(start,end,r);// 画图为了好看，将向量缩放到三角形范围内，实际梯度的计算仍用回start-->end				
 
 			//	if(r > (start - end).Norm()/2){				
 				//vcg::Point3f normalf = NormalizedNormal<CFaceO>(f);
 				//drawArrowOnFace(start ,newEnd,normalf,gdut_base::Blue);	
 				//drawArrow(start ,newEnd,gdut_base::Red);
-				drawStick(start ,newEnd,gdut_base::Blue);// newEnd 而且不用if过滤，可以看到bunny的曲率梯度
+				gdut_base::drawStick(start ,newEnd,Blue,*para);// newEnd 而且不用if过滤，可以看到bunny的曲率梯度
 			//	}
 				//start
 			}
@@ -672,8 +680,8 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 			if(s_source.size()==0)
 				gdut_base::findSingluarityOnMesh(m.cm,s_source,s_sink);
 
-			gdut_base::drawPoints(s_source,gdut_base::Blue);
-			gdut_base::drawPoints(s_sink,gdut_base::Red);
+			gdut_base::drawPoints(s_source,Red,*para);
+			gdut_base::drawPoints(s_sink,Black,*para);
 
 			glPopAttrib();
 		} break;

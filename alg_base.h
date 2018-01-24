@@ -1,5 +1,5 @@
-#ifndef ALG_BASE_H
-#define ALG_BASE_H
+#ifndef _ALG_BASE_H
+#define _ALG_BASE_H
 
 #include <eigen/Sparse>
 #include <common/meshmodel.h>
@@ -15,6 +15,29 @@ using namespace vcg;
 #define EPSLON 0.001
 #define PI 3.141592653589
 #define rad2angle( r) r*180/PI;
+# define KH_DIFF_THRESHOLD 0.01
+#define  equal_by_threshold(v1,v2) (abs(v1-v2) < KH_DIFF_THRESHOLD)
+
+struct Color{
+		Color(float r,float g,float b){
+			_r =r;
+			_g = g;
+			_b = b;
+		}
+		float _r,_g,_b;
+
+	};
+struct ShowParameter{
+		ShowParameter(){}
+		ShowParameter(double r,double d,double s){
+			_r = r;
+			_dotSize = d;
+			_singularityDot = s;
+		}
+		double _r;// 三角形的外心半径，可以用来控制向量长度
+		double _dotSize;// 针头半径大小
+		double _singularityDot;// 奇异点半径
+	};
 namespace gdut_base{
 	//函数对象 用于对pair进行hash
 
@@ -31,17 +54,11 @@ namespace gdut_base{
 			return h1(x.first) ^ h2(x.second); 
 		}
 	};
-	struct Color{
-		Color(float r,float g,float b){
-			_r =r;
-			_g = g;
-			_b = b;
-		}
-		float _r,_g,_b;
+	
 
-	}Red(1,0,0),Green(0,1,0),Blue(0,0,1),Orange(1,0.5f,0);
+	
 
-	float countArea(CFaceO& f){
+	inline float countArea(CFaceO& f){
 		vcg::Point3f p_i = f.P(0);
 		vcg::Point3f p_j = f.P(1);
 		vcg::Point3f p_k = f.P(2);
@@ -50,7 +67,7 @@ namespace gdut_base{
 		return (vij ^ vik).Norm()/2;
 	}
 
-	void countNablaOfFace(CFaceO&f,double s0,double s1,double s2,vcg::Point3f&result){
+	inline void countNablaOfFace(CFaceO&f,double s0,double s1,double s2,vcg::Point3f&result){
 		vcg::Point3f p_i = f.P0(0); 
 		vcg::Point3f p_j = f.P0(1); 
 		vcg::Point3f p_k = f.P0(2); 
@@ -66,7 +83,7 @@ namespace gdut_base{
 		result=phi_j*(s1-s0)+phi_k*(s2-s0);	
 	}
 
-	void buildKexi(MeshModel &m,std::map<int,Point3f>& kexi){
+	inline void buildKexi(MeshModel &m,std::map<int,Point3f>& kexi){
 		for(CMeshO::FaceIterator fi=m.cm.face.begin();fi!=m.cm.face.end(); ++fi)	{
 			CFaceO f = *fi;  	
 			f.V0(0)->Base().CurvatureEnabled=true;
@@ -78,7 +95,7 @@ namespace gdut_base{
 			float kh_i = f.V0(0)->Kh();
 			float kh_j = f.V0(1)->Kh();
 			float kh_k = f.V0(2)->Kh();
-			double r = Distance(f.P0(0),bc);
+			//double r = Distance(f.P0(0),bc);
 
 			vcg::Point3f nabla_f;
 			countNablaOfFace(f,kh_i,kh_j,kh_k,nabla_f);
@@ -93,7 +110,7 @@ namespace gdut_base{
 	}
 
 	// 根据三点计算在pi处的拉格朗日基函数的梯度；pi,pj,pk的次序为逆时针方向。
-	void countPhi(vcg::Point3f& p_i,vcg::Point3f& p_j,vcg::Point3f& p_k,vcg::Point3f&result){
+	inline void countPhi(vcg::Point3f& p_i,vcg::Point3f& p_j,vcg::Point3f& p_k,vcg::Point3f&result){
 		vcg::Point3f vij=p_j-p_i;  
 		vcg::Point3f vik=-p_k-p_i;
 		vcg::Point3f normal = (vik^vij);
@@ -101,8 +118,8 @@ namespace gdut_base{
 	}
 
 	//遍历的算法见 http://vcg.isti.cnr.it/vcglib/adjacency.html
-	void extremum_kh_1_ring(CVertexO * v,std::set<int>& v_Chected,pair<int,int>& max_min_indice){
-		float kh_v = v->Kh();		
+	inline void extremum_kh_1_ring(CVertexO * v,std::set<int>& v_Chected,pair<int,int>& max_min_indice,pair<float,float>& max_min_kh){
+//		float kh_v = v->Kh();		
 		CMeshO::FacePointer fp = v->VFp();
 		CFaceO* start = &fp[0];
 		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
@@ -114,9 +131,9 @@ namespace gdut_base{
 			}
 
 			float current_kh = pos.v->Kh();	
-			if(current_kh > kh_v) 
+			if(current_kh > max_min_kh.first) 
 				max_min_indice.first = pos.v->Index();
-			else if(current_kh < kh_v) 
+			else if(current_kh < max_min_kh.second) 
 				max_min_indice.second = pos.v->Index();
 		
 			//pos.FlipV();// 变回来
@@ -126,70 +143,76 @@ namespace gdut_base{
 		}while(pos.f!=start);
 	}
 
-	VertexType extremum_kh_2_ring(CVertexO * v,std::set<int>& v_Chected){
-		pair<int,int>& max_min_indice = make_pair(v->Index(),v->Index());// first表示最大的顶点，second表示最小的顶点，初始化为当前v
-		float kh_v = v->Kh();		
-		// 取得第一个面开始遍历
+	inline VertexType isSupport(CVertexO * v,float kh){
 		CMeshO::FacePointer fp = v->VFp();
 		CFaceO* start = &fp[0];
 		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
 		pos.FlipV();// 得到共边&共面的另一个v
-		do
-		{			
-			if(v_Chected.count(pos.v->Index())){
-				return TRIVAL;
-			}
+		float kh_0 = pos.v->Kh();
+		pos.FlipV();// 变回来
+		if(kh > kh_0){// 核心大于周边
+			do
+			{	
+				// 下一个cell
+				pos.FlipF();// 得到共边，共点的下一个cell（面不同）
+				pos.FlipE();// 得到共面，共点的下一个cell（边不同）
+				pos.FlipV();
 
-			pair<int,int>& mmi(max_min_indice);
-			extremum_kh_1_ring(pos.v,v_Chected,mmi);// 把局部的最大最小传入，如果2个都被更改。说明当前v是平凡的，不是2-ring中的最大/小。
-			if(max_min_indice.first !=mmi.first && max_min_indice.second!= mmi.second){
-				return TRIVAL;
-			}
+				float current_kh = pos.v->Kh();	
+
+				if(kh<current_kh || equal_by_threshold(kh,current_kh))
+					return TRIVAL;
+
+				pos.FlipV();
+			}while(pos.f!=start);
+			return SOURCE;
+		}else{// 核心小于周边
+			do
+			{		
+				// 下一个cell
+				pos.FlipF();// 得到共边，共点的下一个cell（面不同）
+				pos.FlipE();// 得到共面，共点的下一个cell（边不同）
+				pos.FlipV();
+
+				float current_kh = pos.v->Kh();	
+				if(kh>current_kh|| equal_by_threshold(kh,current_kh))
+					return TRIVAL;
 		
-			//pos.FlipV();// 变回来
+				pos.FlipV();
+
+			}while(pos.f!=start);
+			return SINK;
+		}
+	}
+
+	inline VertexType extremum_kh_2_ring(CVertexO * v){
+		float kh_v = v->Kh();		
+		VertexType vt0 = isSupport(v,kh_v);
+		if(vt0 == TRIVAL) return TRIVAL;
+
+		// 取得第一个面开始遍历
+		CMeshO::FacePointer fp = v->VFp();
+		CFaceO* start = &fp[0];
+		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
+		//pos.FlipV();// 得到共边&共面的另一个v
+		do
+		{		
+			// 下一个cell
 			pos.FlipF();// 得到共边，共点的下一个cell（面不同）
 			pos.FlipE();// 得到共面，共点的下一个cell（边不同）
+			pos.FlipV();
+
+			VertexType vt1 = isSupport(pos.v,kh_v);
+			if(vt1 == TRIVAL) 
+				return TRIVAL;
+		
+			pos.FlipV();
 
 		}while(pos.f!=start);
 
-		if(max_min_indice.first == v->Index()){
-			v_Chected.insert(pos.v->Index());
-			return SINK;
-		}
-		if(max_min_indice.second == v->Index()){
-			v_Chected.insert(pos.v->Index());
-			return SOURCE;
-		}
-
-		return TRIVAL;
+		return vt0;
 	}
-	//VertexType countCenter(CVertexO * v){
-	//	float kh_v = v->Kh();
-	//	bool all_greater = true;
-	//	bool all_smaller = true;
-	//	CMeshO::FacePointer fp = v->VFp();
-	//	CFaceO* start = &fp[0];
-	//	vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
-	//	do
-	//	{
-	//		pos.FlipV();// 得到共边&共面的另一个v
-
-	//		float current_kh = pos.v->Kh();
-	//		all_greater = (all_greater&&current_kh >= kh_v);
-	//		all_smaller = (all_smaller&&current_kh <= kh_v);
-	//	
-	//		pos.FlipV();// 变回来
-	//		pos.FlipF();// 得到共边，共点的下一个cell（面不同）
-	//		pos.FlipE();// 得到共面，共点的下一个cell（边不同）
-
-	//	}while(pos.f!=start);
-	//	if(all_greater) return SINK;
-	//	if(all_smaller) return SOURCE;
-	//	return TRIVAL;
-
-	//}
-
-	void drawArrow(vcg::Point3f &origin,vcg::Point3f &dst,Color &color)
+	inline void drawArrow(vcg::Point3f &origin,vcg::Point3f &dst,Color &color)
 	{//////////////////////////////////////////
 		vcg::Point3f z(0,0,1);
 		vcg::Point3f x_axis(1,0,0);
@@ -210,8 +233,8 @@ namespace gdut_base{
 
 
 		// 两次旋转角度
-		double angle1 = rad2angle(acos(diff.X()/diff_xoy.Norm()));// diff_xoy 与x轴夹角	
-		double angle2 = rad2angle(asin(diff.Z()/diff.Norm()));// diff与diff_xoy的夹角
+//		double angle1 = rad2angle(acos(diff.X()/diff_xoy.Norm()));// diff_xoy 与x轴夹角	
+//		double angle2 = rad2angle(asin(diff.Z()/diff.Norm()));// diff与diff_xoy的夹角
 
 		vcg::Point3f rotateAxis = x_axis ^ diff;
 		double r = asin(rotateAxis.Norm()/diff.Norm());
@@ -253,7 +276,7 @@ namespace gdut_base{
 		glDisable(GL_LINE_SMOOTH);
 	}
 
-	void drawStick(vcg::Point3f &origin,vcg::Point3f &dst,Color &color)
+	inline void drawStick(vcg::Point3f &origin,vcg::Point3f &dst,Color &color,ShowParameter& para)
 	{//////////////////////////////////////////
 		// 画箭头干
 		glBegin(GL_LINES);
@@ -262,12 +285,12 @@ namespace gdut_base{
 		glVertex(dst);	
 		glEnd();
 
-		GLdouble r = 0.0006;// bunny模型要用0.05，kitty要用0.0006
+		GLdouble r = para._dotSize;// bunny模型要用0.05，kitty要用0.0006
 		GLint m = 8;
 		GLint n = 8;
 		glPushMatrix();			
 		glTranslatef(origin.X(), origin.Y(), origin.Z());
-		vcg::glutSolidSphere(r, m, n); 
+		::glutSolidSphere(r, m, n); 
 		glPopMatrix();
 
 		//glEnd();
@@ -275,7 +298,7 @@ namespace gdut_base{
 		glDisable(GL_LINE_SMOOTH);
 	}
 
-	void drawStickMapOnface(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
+	inline void drawStickMapOnface(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
 	{//////////////////////////////////////////
 		// 画箭头干
 		glBegin(GL_LINES);
@@ -289,7 +312,7 @@ namespace gdut_base{
 		GLint n = 5;
 		glPushMatrix();			
 		glTranslatef(origin.X(), origin.Y(), origin.Z());
-		vcg::glutSolidSphere(r, m, n); 
+		::glutSolidSphere(r, m, n); 
 		glPopMatrix();
 
 		glEnd();
@@ -297,25 +320,24 @@ namespace gdut_base{
 		glDisable(GL_LINE_SMOOTH);
 	}
 
-	void drawPoints(std::set<vcg::Point3f> &pts,Color &color)
+	inline void drawPoints(std::set<vcg::Point3f> &pts,Color &color,ShowParameter& para)
 	{//////////////////////////////////////////
 
-		GLdouble r = 0.1;
+		GLdouble r = para._singularityDot;
 		GLint m = 5;
 		GLint n = 5;
 		glColor3f(color._r,color._g,color._b);
 		for(set<vcg::Point3f>::iterator it = pts.begin();it!= pts.end();it++){
 			glPushMatrix();			
 			glTranslatef((*it).X(), (*it).Y(), (*it).Z());
-			vcg::glutSolidSphere(r, m, n); 
+			::glutSolidSphere(r, m, n); 
 			glPopMatrix();	
 		}
 		glFlush();                                                                                                             
 		glDisable(GL_LINE_SMOOTH);
 	}
 
-
-	void drawArrowOnFace(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
+	inline void drawArrowOnFace(vcg::Point3f &origin,vcg::Point3f &dst,vcg::Point3f &normal,Color &color)
 	{//////////////////////////////////////////
 		vcg::Point3f z(0,0,1);
 		vcg::Point3f x_axis(1,0,0);
@@ -370,13 +392,13 @@ namespace gdut_base{
 	}
 
 	// 检查局部曲率最大/小的顶点，并画出
-	void findSingluarityOnVertex(CVertexO* v,std::set<int>& v_Chected,std::set<Point3f>& s_source,std::set<Point3f>& s_sink){		
+	inline void findSingluarityOnVertex(CVertexO* v,std::set<int>& v_Chected,std::set<Point3f>& s_source,std::set<Point3f>& s_sink){		
 			if(v_Chected.count(v->Index())){// 检查顶点是否已经处理过
 				return;
 			}
 			
 			//gdut_base::VertexType vt = gdut_base::countCenter(v);
-			gdut_base::VertexType vt = gdut_base::extremum_kh_2_ring(v,v_Chected);
+			gdut_base::VertexType vt = gdut_base::extremum_kh_2_ring(v);
 			switch(vt){
 				case gdut_base::SOURCE:
 					//drawStick(v->P() ,v->P(),gdut_base::Red);
@@ -392,10 +414,10 @@ namespace gdut_base{
 	}
 
 	// 根据顶点平均曲率找到2-ring极值顶点
-	void findSingluarityOnMesh(CMeshO& m,std::set<Point3f>& s_source,std::set<Point3f>& s_sink){
+	inline void findSingluarityOnMesh(CMeshO& m,std::set<Point3f>& s_source,std::set<Point3f>& s_sink){
 		std::set<int> v_Chected;
-		for(CMeshO::VertexIterator fi=m.vert.begin();fi!=m.vert.end(); ++fi){				
-			gdut_base::findSingluarityOnVertex(&(*fi),v_Chected,s_source,s_sink);
+		for(CMeshO::VertexIterator vi=m.vert.begin();vi!=m.vert.end(); ++vi){				
+			gdut_base::findSingluarityOnVertex(&(*vi),v_Chected,s_source,s_sink);
 		}
 	}
 }

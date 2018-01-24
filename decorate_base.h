@@ -27,6 +27,9 @@
 #include <common/interfaces.h>
 #include <wrap/gui/coordinateframe.h>
 #include "colorhistogram.h"
+#include "alg_base.h"
+
+
 
 class QGLShaderProgram;
 typedef vcg::ColorHistogram<float>  CHist;
@@ -89,6 +92,8 @@ private:
 
   std::set<vcg::Point3f> s_source;
   std::set<vcg::Point3f> s_sink;
+
+  std::map<std::string,ShowParameter*> paraMap;
 public:
 
   ExtraMeshDecoratePlugin()
@@ -138,8 +143,10 @@ public:
 
   countOnce = false;
 
-}
+  initMap();
 
+}
+  void initMap();
   void DrawBBoxCorner(MeshModel &m, bool absBBoxFlag=true);
   void DrawQuotedBox(MeshModel &m,QPainter *gla, QFont qf);
   void DrawVertLabel(MeshModel &m, QPainter *gla);
