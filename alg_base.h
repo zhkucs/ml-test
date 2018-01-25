@@ -15,7 +15,7 @@ using namespace vcg;
 #define EPSLON 0.001
 #define PI 3.141592653589
 #define rad2angle( r) r*180/PI;
-# define KH_DIFF_THRESHOLD 0.0000001
+# define KH_DIFF_THRESHOLD 0.002
 #define  equal_by_threshold(v1,v2) (abs(v1-v2) < KH_DIFF_THRESHOLD)
 
 struct Color{
@@ -143,7 +143,7 @@ namespace gdut_base{
 		}while(pos.f!=start);
 	}
 
-	inline VertexType isSupport(CVertexO * v,float kh){
+	inline VertexType isSupport(CVertexO * v,int kernelIndex,float kh){
 		CMeshO::FacePointer fp = v->VFp();
 		CFaceO* start = &fp[0];
 		vcg::face::Pos<CFaceO> pos(start,v);// constructor that takes face, edge and vertex
@@ -158,10 +158,11 @@ namespace gdut_base{
 				pos.FlipE();// 得到共面，共点的下一个cell（边不同）
 				pos.FlipV();
 
-				float current_kh = pos.v->Kh();	
-
-				if(kh<current_kh || equal_by_threshold(kh,current_kh))
-					return TRIVAL;
+				if(kernelIndex != pos.v->Index()){// pos.v不是核心才处理
+					float current_kh = pos.v->Kh();	
+					if(kh<current_kh || equal_by_threshold(kh,current_kh))
+						return TRIVAL;
+				}
 
 				pos.FlipV();
 			}while(pos.f!=start);
@@ -174,9 +175,11 @@ namespace gdut_base{
 				pos.FlipE();// 得到共面，共点的下一个cell（边不同）
 				pos.FlipV();
 
-				float current_kh = pos.v->Kh();	
-				if(kh>current_kh|| equal_by_threshold(kh,current_kh))
-					return TRIVAL;
+				if(kernelIndex != pos.v->Index()){// pos.v不是核心才处理
+					float current_kh = pos.v->Kh();	
+					if(kh>current_kh|| equal_by_threshold(kh,current_kh))
+						return TRIVAL;
+				}
 		
 				pos.FlipV();
 
@@ -187,7 +190,7 @@ namespace gdut_base{
 
 	inline VertexType extremum_kh_2_ring(CVertexO * v){
 		float kh_v = v->Kh();		
-		VertexType vt0 = isSupport(v,kh_v);
+		VertexType vt0 = isSupport(v,v->Index(),kh_v);
 		if(vt0 == TRIVAL) return TRIVAL;
 
 		// 取得第一个面开始遍历
@@ -202,7 +205,7 @@ namespace gdut_base{
 			pos.FlipE();// 得到共面，共点的下一个cell（边不同）
 			pos.FlipV();
 
-			VertexType vt1 = isSupport(pos.v,kh_v);
+			VertexType vt1 = isSupport(pos.v,v->Index(),kh_v);
 			if(vt1 == TRIVAL) 
 				return TRIVAL;
 		

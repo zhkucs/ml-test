@@ -50,11 +50,12 @@ using namespace vcg;
 using namespace std;
 
 extern struct Color Red(1,0,0),Green(0,1,0),Blue(0,0,1),Orange(1,0.5f,0),Black(0,0,0);
-extern struct ShowParameter Bunny(0.5,0.05,0.5),Cat(0.005,0.0006,0.05);
+extern struct ShowParameter Bunny(0.5,0.05,0.2),Cat(0.005,0.0006,0.005);
 
 
 void ExtraMeshDecoratePlugin::initMap(){
 	  paraMap.insert(make_pair(std::string("bunny.off"),&Bunny));
+	  paraMap.insert(make_pair(std::string("bunny.1.obj"),&Bunny));
   paraMap.insert(make_pair(std::string("cat.obj"),&Cat));
 }
 QString ExtraMeshDecoratePlugin::decorationInfo(FilterIDType filter) const
