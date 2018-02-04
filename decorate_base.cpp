@@ -50,13 +50,14 @@ using namespace vcg;
 using namespace std;
 
 extern struct Color Red(1,0,0),Green(0,1,0),Blue(0,0,1),Orange(1,0.5f,0),Black(0,0,0);
-extern struct ShowParameter Bunny(0.5,0.05,0.2),Cat(0.005,0.0006,0.005);
+extern struct ShowParameter Bunny(0.5,0.05,0.2),Cat(0.005,0.0012,0.003),Dragon(0.08,0.012,0.03);
 
 
 void ExtraMeshDecoratePlugin::initMap(){
 	  paraMap.insert(make_pair(std::string("bunny.off"),&Bunny));
 	  paraMap.insert(make_pair(std::string("bunny.1.obj"),&Bunny));
   paraMap.insert(make_pair(std::string("cat.obj"),&Cat));
+  paraMap.insert(make_pair(std::string("dragon11268.obj"),&Dragon));
 }
 QString ExtraMeshDecoratePlugin::decorationInfo(FilterIDType filter) const
 {
@@ -678,9 +679,13 @@ void ExtraMeshDecoratePlugin::decorateMesh(QAction *a, MeshModel &m, RichParamet
 				//start
 			}
 
-			if(s_source.size()==0)
+			if(s_source.size()==0){
 				gdut_base::findSingluarityOnMesh(m.cm,s_source,s_sink);
-
+				char buffer[80];
+				sprintf(buffer, "source points: %i ;sink points: %i\n", s_source.size(),s_sink.size());
+				QMessageBox::information(NULL, QString("statistics"), QString(buffer));
+			}
+			
 			gdut_base::drawPoints(s_source,Red,*para);
 			gdut_base::drawPoints(s_sink,Black,*para);
 
